@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Runtime.InteropServices;
+
 namespace WFA_WallpaperClock
 {
 
@@ -16,6 +18,9 @@ namespace WFA_WallpaperClock
         string WallpaperPth = Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Control Panel\Desktop", "Wallpaper", 0).ToString(); // Get the wallpaper path.
         double ratio = Convert.ToDouble(Screen.PrimaryScreen.Bounds.Height) / Convert.ToDouble(Screen.PrimaryScreen.Bounds.Width);
 
+        string OriginalWallpaperPath = null;
+        string BurntWallpaperPath = null;
+
         string selectedFolderPath = null;
         Point startpoint;
         Point lastpoint;
@@ -23,6 +28,11 @@ namespace WFA_WallpaperClock
         System.Drawing.Graphics formGraphics;
         bool isDrawing = false;
         Rectangle theRectangle = new Rectangle(new Point(0, 0), new Size(0, 0));
+
+        [DllImport("user32.dll")]
+        private static extern bool SystemParametersInfo(uint uiAction, uint uiParam, string pvParam, uint fWinIni);
+        const uint SPI_SETDESKWALLPAPER = 0x14;
+        const uint SPIF_UPDATEINIFILE = 0x01;
 
         public MainForm()
         {
@@ -193,7 +203,7 @@ namespace WFA_WallpaperClock
                 pictureBox1.Image = Image.FromFile(wallpaperFile.FullName);
                 pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
 
-
+                SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, burnNewWallpaper(wallpaperFile.FullName), SPIF_UPDATEINIFILE);
             }
 
         }
@@ -219,20 +229,22 @@ namespace WFA_WallpaperClock
             
         }
 
-        private string burnNewWallpaper(string originalWallpaperPath)
+        private string burnNewWallpaper(string originalWallpaperPath)   //Burns image with current time and returns the path.
         {
-            //Bitmap wallpaper = new Bitmap(pictureBox1.Image);
-            //Graphics wallpaperGraph = Graphics.FromImage(wallpaper);
-            //System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+            Bitmap wallpaper = new Bitmap(pictureBox1.Image);
+            Graphics wallpaperGraph = Graphics.FromImage(wallpaper);
+            System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
 
-            //Point relativePoint = new Point((wallpaper.Width * startpoint.X) / pictureBox1.Width, (wallpaper.Height * startpoint.Y) / pictureBox1.Height);
+            Point relativePoint = new Point((wallpaper.Width * startpoint.X) / pictureBox1.Width, (wallpaper.Height * startpoint.Y) / pictureBox1.Height);
 
-            //path.AddString(DateTime.Now.ToShortTimeString(), font.FontFamily, (int)font.Style, (float)(fontSize * Convert.ToDouble(wallpaper.Width) / Convert.ToDouble(pictureBox1.Width)), relativePoint, new StringFormat());
-            //wallpaperGraph.DrawPath(new Pen(HSL.GetComplementaryColor(color), 3f), path);
-            //wallpaperGraph.FillPath(new SolidBrush(Color.FromArgb(255, color)), path);
+            path.AddString(DateTime.Now.ToShortTimeString(), font.FontFamily, (int)font.Style, (float)(fontSize * Convert.ToDouble(wallpaper.Width) / Convert.ToDouble(pictureBox1.Width)), relativePoint, new StringFormat());
+            wallpaperGraph.DrawPath(new Pen(HSL.GetComplementaryColor(color), 3f), path);
+            wallpaperGraph.FillPath(new SolidBrush(Color.FromArgb(255, color)), path);
+            //BurntWallpaperPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\WallpaperClock\\wallpaper.jpg";
+            BurntWallpaperPath = @"D:\wallpaper.jpg";
+            wallpaper.Save(BurntWallpaperPath);
 
-            //wallpaper.Save(@"D:\burntWallpaper.jpg");
-            return null;
+            return BurntWallpaperPath;
         }
     }
 
