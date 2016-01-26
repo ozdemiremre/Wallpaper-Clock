@@ -107,7 +107,7 @@ namespace WFA_WallpaperClock
                 Control control = (Control)sender;
                 formGraphics = control.CreateGraphics();
                 formGraphics.FillRectangle(new SolidBrush(newColor), theRectangle);
-
+                formGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
                 theRectangle.X = startpoint.X;
                 theRectangle.Y = startpoint.Y;
                 theRectangle.Height = e.Y - startpoint.Y;
@@ -163,49 +163,53 @@ namespace WFA_WallpaperClock
             wallpaperGraph.DrawPath(new Pen(HSL.GetComplementaryColor(color), 3f), path);
             wallpaperGraph.FillPath(new SolidBrush(Color.FromArgb(255, color)), path);
         }
-
+        int timerCounter = 0;
         private void timer1_Tick(object sender, EventArgs e)    //Every minute.
         {
-            
-            if (System.IO.Directory.Exists(selectedFolderPath) && selectedFolderPath != null)     //Check f folder exists, folderPath string != null
-            {                                                                                                                                                                                //User is going to *select* a folder. So it already exists. Don't think I need to check again.
-                Random rnd = new Random(DateTime.Now.Millisecond);
+            timerCounter++;
 
-                DirectoryInfo dirInfo = new DirectoryInfo(selectedFolderPath);
-                FileInfo[] fileInfoJPG = dirInfo.GetFiles("*.jpg");
-                FileInfo[] fileInfoPNG = dirInfo.GetFiles("*.png");
-                FileInfo wallpaperFile;
+            if (timerCounter == Convert.ToInt32(numericWallpaperTime.Value))
+            {
+                timerCounter = 0;
 
+                if (System.IO.Directory.Exists(selectedFolderPath) && selectedFolderPath != null)     //Check f folder exists, folderPath string != null
+                {                                                                                                                                                                                //User is going to *select* a folder. So it already exists. Don't think I need to check again.
+                    Random rnd = new Random(DateTime.Now.Millisecond);
 
-                int JPGorPNG;
+                    DirectoryInfo dirInfo = new DirectoryInfo(selectedFolderPath);
+                    FileInfo[] fileInfoJPG = dirInfo.GetFiles("*.jpg");
+                    FileInfo[] fileInfoPNG = dirInfo.GetFiles("*.png");
+                    FileInfo wallpaperFile;
 
-                if (fileInfoJPG.Length == 0 && fileInfoPNG.Length == 0)
-                {
-                    MessageBox.Show("No images found at the selected path.\n Did you move images from the folder?", "ERROR", MessageBoxButtons.OK);
-                    return;
+                    int JPGorPNG;
+
+                    if (fileInfoJPG.Length == 0 && fileInfoPNG.Length == 0)
+                    {
+                        MessageBox.Show("No images found at the selected path.\n Did you move images from the folder?", "ERROR", MessageBoxButtons.OK);
+                        return;
+                    }
+
+                    if (fileInfoJPG.Length == 0)    //Because I checked if the folder has JPG or PNG files, it has at least a JPG or a PNG.
+                        JPGorPNG = 1;
+
+                    else
+                        JPGorPNG = 0;
+
+                    if (fileInfoJPG.Length != 0 && fileInfoPNG.Length != 0)
+                        JPGorPNG = rnd.Next(0, 2);
+
+                    if (JPGorPNG == 0)
+                        wallpaperFile = fileInfoJPG[rnd.Next(0, fileInfoJPG.Length)];
+
+                    else
+                        wallpaperFile = fileInfoPNG[rnd.Next(0, fileInfoPNG.Length)];
+
+                    pictureBox1.Image = Image.FromFile(wallpaperFile.FullName);
+                    pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+
+                    SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, burnNewWallpaper(wallpaperFile.FullName), SPIF_UPDATEINIFILE);
                 }
-
-                if (fileInfoJPG.Length == 0)    //Because I checked if the folder has JPG or PNG files, it has at least a JPG or a PNG.
-                    JPGorPNG = 1;
-
-                else
-                    JPGorPNG = 0;
-
-                if (fileInfoJPG.Length != 0 && fileInfoPNG.Length != 0)
-                    JPGorPNG = rnd.Next(0, 2);
-
-                if (JPGorPNG == 0)
-                    wallpaperFile = fileInfoJPG[rnd.Next(0, fileInfoJPG.Length)];
-
-                else
-                    wallpaperFile = fileInfoPNG[rnd.Next(0, fileInfoPNG.Length)];
-
-                pictureBox1.Image = Image.FromFile(wallpaperFile.FullName);
-                pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-
-                SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, burnNewWallpaper(wallpaperFile.FullName), SPIF_UPDATEINIFILE);
             }
-
         }
 
         private void buttonSelectFolder_Click(object sender, EventArgs e)
@@ -233,6 +237,7 @@ namespace WFA_WallpaperClock
         {
             Bitmap wallpaper = new Bitmap(pictureBox1.Image);
             Graphics wallpaperGraph = Graphics.FromImage(wallpaper);
+            wallpaperGraph.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
 
             Point relativePoint = new Point((wallpaper.Width * startpoint.X) / pictureBox1.Width, (wallpaper.Height * startpoint.Y) / pictureBox1.Height);
