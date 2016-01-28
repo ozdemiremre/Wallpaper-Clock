@@ -137,6 +137,7 @@
             0,
             0,
             0});
+            this.numericWallpaperTime.ValueChanged += new System.EventHandler(this.numericWallpaperTime_ValueChanged);
             // 
             // label1
             // 
@@ -194,7 +195,6 @@
         #endregion
 
         private System.Windows.Forms.FontDialog fontDialog1;
-        private System.Windows.Forms.Button buttonSelectFont;
         private System.Windows.Forms.ColorDialog colorDialog1;
         private System.Windows.Forms.Button buttonSelectColor;
         private System.Windows.Forms.Button buttonResize;
@@ -207,6 +207,7 @@
         private System.Windows.Forms.CheckBox isShuffle;
         private System.Windows.Forms.Button buttonSelectFolder;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.Button buttonSelectFont;
     }
 }
 

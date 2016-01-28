@@ -13,12 +13,11 @@ namespace WFA_WallpaperClock
 
     public partial class MainForm : Form
     {
-        Font font = DefaultFont;
-        Color color = DefaultForeColor;
+        public Font font = DefaultFont;
+        public Color color = DefaultForeColor;
         string WallpaperPth = Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Control Panel\Desktop", "Wallpaper", 0).ToString(); // Get the wallpaper path.
         double ratio = Convert.ToDouble(Screen.PrimaryScreen.Bounds.Height) / Convert.ToDouble(Screen.PrimaryScreen.Bounds.Width);
 
-        string OriginalWallpaperPath = null;
         string BurntWallpaperPath = null;
 
         string selectedFolderPath = null;
@@ -36,11 +35,22 @@ namespace WFA_WallpaperClock
 
         public MainForm()
         {
+            Settings.CreateDirectory();
+            Settings.CreateSettings();
             InitializeComponent();
 
-            Graphics thisGraphics = this.CreateGraphics();
-            thisGraphics.DrawRectangle(Pens.Black, 0f, 0f, 12, 12);
             pictureBox1.Width = Convert.ToInt32(Convert.ToDouble(pictureBox1.Height) / ratio);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+
+
+            font = new Font(Settings.ReadSetting(Settings.settings.font), fontSize);
+            buttonSelectFont.Font = new Font(font.Name, 8f);
+
+            color = Color.FromArgb(Convert.ToInt32(Settings.ReadSetting(Settings.settings.color)));
+            buttonSelectColor.BackColor = color;
+
+            selectedFolderPath = Settings.ReadSetting(Settings.settings.wallpaperFolderDirectory);            
+            numericWallpaperTime.Value = Convert.ToInt32(Settings.ReadSetting(Settings.settings.minuteOfChangeWallpaper));
         }
 
         private void buttonChooseFont_Click(object sender, EventArgs e)
@@ -50,6 +60,8 @@ namespace WFA_WallpaperClock
             {
                 font = new Font(fontDialog1.Font.Name, 96);
                 buttonSelectFont.Font = new Font(fontDialog1.Font.Name, buttonSelectFont.Font.Size);
+
+                Settings.ChangeSetting(Settings.settings.font, buttonSelectFont.Font.Name);
             }
         }
 
@@ -60,25 +72,24 @@ namespace WFA_WallpaperClock
                 color = colorDialog1.Color;
                 buttonSelectColor.BackColor = color;
 
+                buttonSelectColor.ForeColor = HSL.GetComplementaryColor(color);
 
-                HSL hsl = HSL.RGBToHSL(color);
-                hsl = HSL.calculateTheOppositeHue(hsl);
-                buttonSelectColor.ForeColor = HSL.HSLToRGB(hsl);
+                Settings.ChangeSetting(Settings.settings.color, color.ToArgb().ToString());
             }
         }
         private void buttonResize_Click(object sender, EventArgs e)
         {
-            string WallpaperPth = Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Control Panel\Desktop", "Wallpaper", 0).ToString(); // Get the wallpaper path.
-            string WallpaperStyle = Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Control Panel\Desktop", "WallpaperStyle", 0).ToString();
+            //string WallpaperPth = Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Control Panel\Desktop", "Wallpaper", 0).ToString(); // Get the wallpaper path.
+            //string WallpaperStyle = Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Control Panel\Desktop", "WallpaperStyle", 0).ToString();
 
-            pictureBox1.Width = Convert.ToInt32(Convert.ToDouble(pictureBox1.Height) / ratio);
-            pictureBox1.LoadAsync(WallpaperPth);
-            Bitmap btmp = new Bitmap(WallpaperPth);
-            Graphics GrapBitmap = Graphics.FromImage(btmp);
+            //pictureBox1.Width = Convert.ToInt32(Convert.ToDouble(pictureBox1.Height) / ratio);
+            //pictureBox1.LoadAsync(WallpaperPth);
+            //Bitmap btmp = new Bitmap(WallpaperPth);
+            //Graphics GrapBitmap = Graphics.FromImage(btmp);
 
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            //pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
 
-            buttonBurnClock.Enabled = true;
+            //buttonBurnClock.Enabled = true;
         }
 
 
@@ -91,8 +102,6 @@ namespace WFA_WallpaperClock
             theRectangle.Height = 0;
 
             isDrawing = true;
-
-            labelState.Text = "down";
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
@@ -145,8 +154,8 @@ namespace WFA_WallpaperClock
 
             System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
             path.AddString(DateTime.Now.ToShortTimeString(), font.FontFamily, (int)font.Style, fontSize, theRectangle, new StringFormat());
-            formGraphics.DrawPath(new Pen(Brushes.Black, 3f), path);
-            formGraphics.FillPath(new SolidBrush(Color.FromArgb(255, Color.White)), path);
+            formGraphics.DrawPath(new Pen(HSL.GetComplementaryColor(color), 3f), path);
+            formGraphics.FillPath(new SolidBrush(Color.FromArgb(255, color)), path);
 
             labelState.Text = e.Location.X.ToString() + " , " + e.Location.Y.ToString();
         }
@@ -163,7 +172,9 @@ namespace WFA_WallpaperClock
             wallpaperGraph.DrawPath(new Pen(HSL.GetComplementaryColor(color), 3f), path);
             wallpaperGraph.FillPath(new SolidBrush(Color.FromArgb(255, color)), path);
         }
+
         int timerCounter = 0;
+
         private void timer1_Tick(object sender, EventArgs e)    //Every minute.
         {
             timerCounter++;
@@ -207,6 +218,8 @@ namespace WFA_WallpaperClock
                     pictureBox1.Image = Image.FromFile(wallpaperFile.FullName);
                     pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
 
+                    pictureBox1.LoadAsync(wallpaperFile.FullName);
+
                     SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, burnNewWallpaper(wallpaperFile.FullName), SPIF_UPDATEINIFILE);
                 }
             }
@@ -228,9 +241,12 @@ namespace WFA_WallpaperClock
                     selectedFolderPath = null;
                     return;
                 }
+                else
+                    Settings.ChangeSetting(Settings.settings.wallpaperFolderDirectory, selectedFolderPath);
+
             }
 
-            
+
         }
 
         private string burnNewWallpaper(string originalWallpaperPath)   //Burns image with current time and returns the path.
@@ -245,11 +261,15 @@ namespace WFA_WallpaperClock
             path.AddString(DateTime.Now.ToShortTimeString(), font.FontFamily, (int)font.Style, (float)(fontSize * Convert.ToDouble(wallpaper.Width) / Convert.ToDouble(pictureBox1.Width)), relativePoint, new StringFormat());
             wallpaperGraph.DrawPath(new Pen(HSL.GetComplementaryColor(color), 3f), path);
             wallpaperGraph.FillPath(new SolidBrush(Color.FromArgb(255, color)), path);
-            //BurntWallpaperPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\WallpaperClock\\wallpaper.jpg";
-            BurntWallpaperPath = @"D:\wallpaper.jpg";
+            BurntWallpaperPath = Settings.rootDirectory + "\\wallpaper.jpg";
             wallpaper.Save(BurntWallpaperPath);
 
             return BurntWallpaperPath;
+        }
+
+        private void numericWallpaperTime_ValueChanged(object sender, EventArgs e)
+        {
+            Settings.ChangeSetting(Settings.settings.minuteOfChangeWallpaper, numericWallpaperTime.Value.ToString());
         }
     }
 
