@@ -15,12 +15,14 @@ namespace WFA_WallpaperClock
     {
         public Font font = DefaultFont;
         public Color color = DefaultForeColor;
-        string WallpaperPth = Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Control Panel\Desktop", "Wallpaper", 0).ToString(); // Get the wallpaper path.
+        //string WallpaperPth = Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Control Panel\Desktop", "Wallpaper", 0).ToString(); // Get the wallpaper path.
         double ratio = Convert.ToDouble(Screen.PrimaryScreen.Bounds.Height) / Convert.ToDouble(Screen.PrimaryScreen.Bounds.Width);
 
         string BurntWallpaperPath = null;
-
         string selectedFolderPath = null;
+
+        FileInfo wallpaperFile;
+
         Point startpoint;
         Point lastpoint;
         float fontSize = 96f;
@@ -42,7 +44,6 @@ namespace WFA_WallpaperClock
             pictureBox1.Width = Convert.ToInt32(Convert.ToDouble(pictureBox1.Height) / ratio);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
 
-
             font = new Font(Settings.ReadSetting(Settings.settings.font), fontSize);
             buttonSelectFont.Font = new Font(font.Name, 8f);
 
@@ -51,6 +52,19 @@ namespace WFA_WallpaperClock
 
             selectedFolderPath = Settings.ReadSetting(Settings.settings.wallpaperFolderDirectory);            
             numericWallpaperTime.Value = Convert.ToInt32(Settings.ReadSetting(Settings.settings.minuteOfChangeWallpaper));
+
+            startpoint.X = Convert.ToInt32(Settings.ReadSetting(Settings.settings.startPointX));
+            startpoint.Y = Convert.ToInt32(Settings.ReadSetting(Settings.settings.startPointY));
+
+            if (!String.IsNullOrWhiteSpace(Settings.ReadSetting(Settings.settings.lastWallpaperLocation))) //If a wallpaper is selected from before.
+            {
+                wallpaperFile = new FileInfo(Settings.ReadSetting(Settings.settings.lastWallpaperLocation));
+                
+            }
+            else
+                wallpaperFile = new FileInfo(getNewWallpaper(false));
+
+            pictureBox1.LoadAsync(wallpaperFile.FullName);
         }
 
         private void buttonChooseFont_Click(object sender, EventArgs e)
@@ -77,21 +91,6 @@ namespace WFA_WallpaperClock
                 Settings.ChangeSetting(Settings.settings.color, color.ToArgb().ToString());
             }
         }
-        private void buttonResize_Click(object sender, EventArgs e)
-        {
-            //string WallpaperPth = Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Control Panel\Desktop", "Wallpaper", 0).ToString(); // Get the wallpaper path.
-            //string WallpaperStyle = Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Control Panel\Desktop", "WallpaperStyle", 0).ToString();
-
-            //pictureBox1.Width = Convert.ToInt32(Convert.ToDouble(pictureBox1.Height) / ratio);
-            //pictureBox1.LoadAsync(WallpaperPth);
-            //Bitmap btmp = new Bitmap(WallpaperPth);
-            //Graphics GrapBitmap = Graphics.FromImage(btmp);
-
-            //pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-
-            //buttonBurnClock.Enabled = true;
-        }
-
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
@@ -150,6 +149,9 @@ namespace WFA_WallpaperClock
             lastpoint.X = e.X;
             lastpoint.Y = e.Y;
 
+            Settings.ChangeSetting(Settings.settings.startPointX, e.X.ToString());
+            Settings.ChangeSetting(Settings.settings.startPointY, e.Y.ToString());
+
             pictureBox1.Refresh();
 
             System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
@@ -160,69 +162,29 @@ namespace WFA_WallpaperClock
             labelState.Text = e.Location.X.ToString() + " , " + e.Location.Y.ToString();
         }
 
-        private void buttonBurnClock_Click(object sender, EventArgs e)
-        {
-            Bitmap wallpaper = new Bitmap(pictureBox1.Image);
-            Graphics wallpaperGraph = Graphics.FromImage(wallpaper);
-            System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
-
-            Point relativePoint = new Point((wallpaper.Width * startpoint.X) / pictureBox1.Width, (wallpaper.Height * startpoint.Y) / pictureBox1.Height);
-
-            path.AddString(DateTime.Now.ToShortTimeString(), font.FontFamily, (int)font.Style, (float)(fontSize * Convert.ToDouble(wallpaper.Width) / Convert.ToDouble(pictureBox1.Width)), relativePoint, new StringFormat());
-            wallpaperGraph.DrawPath(new Pen(HSL.GetComplementaryColor(color), 3f), path);
-            wallpaperGraph.FillPath(new SolidBrush(Color.FromArgb(255, color)), path);
-        }
-
         int timerCounter = 0;
 
         private void timer1_Tick(object sender, EventArgs e)    //Every minute.
         {
             timerCounter++;
+            pictureBox1.LoadAsync(wallpaperFile.FullName);
+            SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, burnNewWallpaper(wallpaperFile.FullName), SPIF_UPDATEINIFILE);
+            
 
             if (timerCounter == Convert.ToInt32(numericWallpaperTime.Value))
             {
                 timerCounter = 0;
 
-                if (System.IO.Directory.Exists(selectedFolderPath) && selectedFolderPath != null)     //Check f folder exists, folderPath string != null
-                {                                                                                                                                                                                //User is going to *select* a folder. So it already exists. Don't think I need to check again.
-                    Random rnd = new Random(DateTime.Now.Millisecond);
+                string path = getNewWallpaper(false); //isShuffle not working atm
 
-                    DirectoryInfo dirInfo = new DirectoryInfo(selectedFolderPath);
-                    FileInfo[] fileInfoJPG = dirInfo.GetFiles("*.jpg");
-                    FileInfo[] fileInfoPNG = dirInfo.GetFiles("*.png");
-                    FileInfo wallpaperFile;
+                pictureBox1.Image = Image.FromFile(wallpaperFile.FullName);
+                pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
 
-                    int JPGorPNG;
+                pictureBox1.LoadAsync(path);
 
-                    if (fileInfoJPG.Length == 0 && fileInfoPNG.Length == 0)
-                    {
-                        MessageBox.Show("No images found at the selected path.\n Did you move images from the folder?", "ERROR", MessageBoxButtons.OK);
-                        return;
-                    }
-
-                    if (fileInfoJPG.Length == 0)    //Because I checked if the folder has JPG or PNG files, it has at least a JPG or a PNG.
-                        JPGorPNG = 1;
-
-                    else
-                        JPGorPNG = 0;
-
-                    if (fileInfoJPG.Length != 0 && fileInfoPNG.Length != 0)
-                        JPGorPNG = rnd.Next(0, 2);
-
-                    if (JPGorPNG == 0)
-                        wallpaperFile = fileInfoJPG[rnd.Next(0, fileInfoJPG.Length)];
-
-                    else
-                        wallpaperFile = fileInfoPNG[rnd.Next(0, fileInfoPNG.Length)];
-
-                    pictureBox1.Image = Image.FromFile(wallpaperFile.FullName);
-                    pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-
-                    pictureBox1.LoadAsync(wallpaperFile.FullName);
-
-                    SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, burnNewWallpaper(wallpaperFile.FullName), SPIF_UPDATEINIFILE);
-                }
+                SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, burnNewWallpaper(wallpaperFile.FullName), SPIF_UPDATEINIFILE);
             }
+
         }
 
         private void buttonSelectFolder_Click(object sender, EventArgs e)
@@ -251,7 +213,7 @@ namespace WFA_WallpaperClock
 
         private string burnNewWallpaper(string originalWallpaperPath)   //Burns image with current time and returns the path.
         {
-            Bitmap wallpaper = new Bitmap(pictureBox1.Image);
+            Bitmap wallpaper = new Bitmap(originalWallpaperPath);
             Graphics wallpaperGraph = Graphics.FromImage(wallpaper);
             wallpaperGraph.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
@@ -265,6 +227,50 @@ namespace WFA_WallpaperClock
             wallpaper.Save(BurntWallpaperPath);
 
             return BurntWallpaperPath;
+        }
+
+        private string getNewWallpaper(bool isShuffle) //IsShuffle not working atm.
+        {
+            if (System.IO.Directory.Exists(selectedFolderPath) && selectedFolderPath != null)     //Check f folder exists, folderPath string != null
+            {                                                                                                                                              //User is going to *select* a folder. So it already exists. Don't think I need to check again.
+                Random rnd = new Random(DateTime.Now.Millisecond);
+
+                DirectoryInfo dirInfo = new DirectoryInfo(selectedFolderPath);
+                FileInfo[] fileInfoJPG = dirInfo.GetFiles("*.jpg");
+                FileInfo[] fileInfoPNG = dirInfo.GetFiles("*.png");
+
+
+                int JPGorPNG;
+
+                if (fileInfoJPG.Length == 0 && fileInfoPNG.Length == 0)
+                {
+                    MessageBox.Show("No images found at the selected path.\n Did you move images from the folder?", "ERROR", MessageBoxButtons.OK);
+                    return null;
+                }
+
+                if (fileInfoJPG.Length == 0)    //Because I checked if the folder has JPG or PNG files, it has at least a JPG or a PNG.
+                    JPGorPNG = 1;
+
+                else
+                    JPGorPNG = 0;
+
+                if (fileInfoJPG.Length != 0 && fileInfoPNG.Length != 0)
+                    JPGorPNG = rnd.Next(0, 2);
+
+                if (JPGorPNG == 0)
+                    wallpaperFile = fileInfoJPG[rnd.Next(0, fileInfoJPG.Length)];
+
+                else
+                    wallpaperFile = fileInfoPNG[rnd.Next(0, fileInfoPNG.Length)];
+
+                Settings.ChangeSetting(Settings.settings.lastWallpaperLocation, wallpaperFile.FullName);
+
+                return wallpaperFile.FullName;
+            }
+
+            else
+                return null;
+            
         }
 
         private void numericWallpaperTime_ValueChanged(object sender, EventArgs e)

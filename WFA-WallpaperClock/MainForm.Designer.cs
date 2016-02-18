@@ -33,10 +33,8 @@
             this.buttonSelectFont = new System.Windows.Forms.Button();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.buttonSelectColor = new System.Windows.Forms.Button();
-            this.buttonResize = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.labelState = new System.Windows.Forms.Label();
-            this.buttonBurnClock = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.numericWallpaperTime = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
@@ -59,23 +57,13 @@
             // 
             // buttonSelectColor
             // 
-            this.buttonSelectColor.Location = new System.Drawing.Point(13, 55);
+            this.buttonSelectColor.Location = new System.Drawing.Point(13, 64);
             this.buttonSelectColor.Name = "buttonSelectColor";
             this.buttonSelectColor.Size = new System.Drawing.Size(113, 23);
             this.buttonSelectColor.TabIndex = 1;
             this.buttonSelectColor.Text = "Select Color";
             this.buttonSelectColor.UseVisualStyleBackColor = true;
             this.buttonSelectColor.Click += new System.EventHandler(this.buttonSelectColor_Click);
-            // 
-            // buttonResize
-            // 
-            this.buttonResize.Location = new System.Drawing.Point(13, 93);
-            this.buttonResize.Name = "buttonResize";
-            this.buttonResize.Size = new System.Drawing.Size(113, 21);
-            this.buttonResize.TabIndex = 2;
-            this.buttonResize.Text = "Resize";
-            this.buttonResize.UseVisualStyleBackColor = true;
-            this.buttonResize.Click += new System.EventHandler(this.buttonResize_Click);
             // 
             // pictureBox1
             // 
@@ -92,32 +80,21 @@
             // labelState
             // 
             this.labelState.AutoSize = true;
-            this.labelState.Location = new System.Drawing.Point(140, 233);
+            this.labelState.Location = new System.Drawing.Point(136, 236);
             this.labelState.Name = "labelState";
             this.labelState.Size = new System.Drawing.Size(35, 13);
             this.labelState.TabIndex = 4;
             this.labelState.Text = "label1";
             // 
-            // buttonBurnClock
-            // 
-            this.buttonBurnClock.Enabled = false;
-            this.buttonBurnClock.Location = new System.Drawing.Point(13, 144);
-            this.buttonBurnClock.Name = "buttonBurnClock";
-            this.buttonBurnClock.Size = new System.Drawing.Size(113, 23);
-            this.buttonBurnClock.TabIndex = 5;
-            this.buttonBurnClock.Text = "Burn Clock";
-            this.buttonBurnClock.UseVisualStyleBackColor = true;
-            this.buttonBurnClock.Click += new System.EventHandler(this.buttonBurnClock_Click);
-            // 
             // timer1
             // 
             this.timer1.Enabled = true;
-            this.timer1.Interval = 6000;
+            this.timer1.Interval = 60000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // numericWallpaperTime
             // 
-            this.numericWallpaperTime.Location = new System.Drawing.Point(137, 200);
+            this.numericWallpaperTime.Location = new System.Drawing.Point(137, 155);
             this.numericWallpaperTime.Maximum = new decimal(new int[] {
             60,
             0,
@@ -142,7 +119,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(10, 202);
+            this.label1.Location = new System.Drawing.Point(10, 157);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(121, 13);
             this.label1.TabIndex = 7;
@@ -151,7 +128,7 @@
             // isShuffle
             // 
             this.isShuffle.AutoSize = true;
-            this.isShuffle.Location = new System.Drawing.Point(13, 173);
+            this.isShuffle.Location = new System.Drawing.Point(13, 191);
             this.isShuffle.Name = "isShuffle";
             this.isShuffle.Size = new System.Drawing.Size(59, 17);
             this.isShuffle.TabIndex = 8;
@@ -160,7 +137,7 @@
             // 
             // buttonSelectFolder
             // 
-            this.buttonSelectFolder.Location = new System.Drawing.Point(13, 223);
+            this.buttonSelectFolder.Location = new System.Drawing.Point(13, 113);
             this.buttonSelectFolder.Name = "buttonSelectFolder";
             this.buttonSelectFolder.Size = new System.Drawing.Size(113, 23);
             this.buttonSelectFolder.TabIndex = 9;
@@ -177,10 +154,8 @@
             this.Controls.Add(this.isShuffle);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.numericWallpaperTime);
-            this.Controls.Add(this.buttonBurnClock);
             this.Controls.Add(this.labelState);
             this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.buttonResize);
             this.Controls.Add(this.buttonSelectColor);
             this.Controls.Add(this.buttonSelectFont);
             this.Name = "MainForm";
@@ -197,10 +172,8 @@
         private System.Windows.Forms.FontDialog fontDialog1;
         private System.Windows.Forms.ColorDialog colorDialog1;
         private System.Windows.Forms.Button buttonSelectColor;
-        private System.Windows.Forms.Button buttonResize;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label labelState;
-        private System.Windows.Forms.Button buttonBurnClock;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.NumericUpDown numericWallpaperTime;
         private System.Windows.Forms.Label label1;

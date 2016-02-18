@@ -13,7 +13,7 @@ namespace WFA_WallpaperClock
         public static string rootDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\WallpaperClock";
         public static string settingsDirectory = rootDirectory + "\\WallpaperClockSettings.txt";
 
-        static string[] settingStrings = new string[5];
+        static string[] settingStrings = new string[8];
 
         public enum settings
         {
@@ -21,7 +21,10 @@ namespace WFA_WallpaperClock
             color,
             shuffle,
             minuteOfChangeWallpaper,
-            wallpaperFolderDirectory
+            wallpaperFolderDirectory,
+            startPointX,
+            startPointY,
+            lastWallpaperLocation
         }
 
         public static void CreateDirectory()
@@ -42,6 +45,9 @@ namespace WFA_WallpaperClock
                 settingStrings[2] = "0";                                                                            //Shuffle
                 settingStrings[3] = "1";                                                                             //minuteOfChangeWallpaper
                 settingStrings[4] = "";                                                                              //WallpaperFolderDirectory
+                settingStrings[5] = "0";
+                settingStrings[6] = "0";
+                settingStrings[7] = "";
 
                 File.WriteAllLines(settingsDirectory, settingStrings);
             }
@@ -67,6 +73,15 @@ namespace WFA_WallpaperClock
                     break;
                 case settings.wallpaperFolderDirectory:
                     return settingStrings[4];
+                    break;
+                case settings.startPointX:
+                    return settingStrings[5];
+                    break;
+                case settings.startPointY:
+                    return settingStrings[6];
+                    break;
+                case settings.lastWallpaperLocation:
+                    return settingStrings[7];
                     break;
                 default:
                     return null;
