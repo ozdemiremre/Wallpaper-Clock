@@ -38,7 +38,7 @@ namespace WFA_WallpaperClock
 
             InitializeComponent();
 
-            pictureBox1.Width = Convert.ToInt32(Convert.ToDouble(pictureBox1.Height) / ratio);
+            pictureBox1.Width = Convert.ToInt32(Convert.ToDouble(pictureBox1.Height) / ratio) ;
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
 
             color = Color.FromArgb(Convert.ToInt32(Settings.ReadSetting(Settings.settings.color)));
@@ -49,13 +49,13 @@ namespace WFA_WallpaperClock
             font = new Font(Settings.ReadSetting(Settings.settings.font), fontSize);
             buttonSelectFont.Font = new Font(font.Name, 8f);
 
-            pictureBox1.LoadAsync(Wallpaper.wallpaperFile.FullName);
-
-            Wallpaper.font = this.font;
-            Wallpaper.color = this.color;
-            Wallpaper.startpoint = this.startpoint;
+            Wallpaper.font = font;
+            Wallpaper.color = color;
+            Wallpaper.startpoint = startpoint;
             Wallpaper.pictureBoxRectangle.Height = pictureBox1.Height;
             Wallpaper.pictureBoxRectangle.Width = pictureBox1.Width;
+
+            checkBoxStartup.Checked = Settings.IsStartupCreated();
         }
 
         private void buttonChooseFont_Click(object sender, EventArgs e)
@@ -136,6 +136,7 @@ namespace WFA_WallpaperClock
                     formGraphics.DrawPath(new Pen(HSL.GetComplementaryColor(color), 3f), path);
                     formGraphics.FillPath(new SolidBrush(Color.FromArgb(255, color)), path);
 
+                    Settings.ChangeSetting(Settings.settings.fontSize, fontSize.ToString());
                     Wallpaper.fontSize = this.fontSize;
                 }
             }
@@ -144,8 +145,6 @@ namespace WFA_WallpaperClock
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
             isDrawing = false;
-
-            
 
             pictureBox1.Refresh();
 
@@ -162,24 +161,32 @@ namespace WFA_WallpaperClock
         private void timer1_Tick(object sender, EventArgs e)    //Every minute.
         {
             timerCounter++;
-            pictureBox1.LoadAsync(Wallpaper.wallpaperFile.FullName);
-            SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, Wallpaper.burnNewWallpaper(Wallpaper.wallpaperFile.FullName), SPIF_UPDATEINIFILE);
 
-
-            if (timerCounter == Convert.ToInt32(numericWallpaperTime.Value))
+            if (!String.IsNullOrEmpty(Settings.ReadSetting(Settings.settings.wallpaperFolderDirectory)) && !String.IsNullOrWhiteSpace(Settings.ReadSetting(Settings.settings.wallpaperFolderDirectory)))
             {
-                timerCounter = 0;
+                SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, Wallpaper.BurnNewWallpaper(Wallpaper.wallpaperFile.FullName), SPIF_UPDATEINIFILE);
+                pictureBox1.LoadAsync(Wallpaper.wallpaperFile.FullName);
 
-                string path = Wallpaper.getNewWallpaper(false); //isShuffle not working atm
+                if (timerCounter == Convert.ToInt32(numericWallpaperTime.Value))
+                {
+                    timerCounter = 0;
 
-                pictureBox1.Image = Image.FromFile(Wallpaper.wallpaperFile.FullName);
-                pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+                    string path = Wallpaper.GetNewWallpaper(false); //isShuffle not working atm
 
-                pictureBox1.LoadAsync(path);
+                    pictureBox1.Image = Image.FromFile(Wallpaper.wallpaperFile.FullName);
+                    pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
 
-                SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, Wallpaper.burnNewWallpaper(Wallpaper.wallpaperFile.FullName), SPIF_UPDATEINIFILE);
+                    pictureBox1.LoadAsync(path);
+
+                    SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, Wallpaper.BurnNewWallpaper(Wallpaper.wallpaperFile.FullName), SPIF_UPDATEINIFILE);
+                }
+
+                else if (timerCounter > Convert.ToInt32(numericWallpaperTime.Value)) //To stop timerCounter going over the max minutes.
+                    timerCounter = 0;
+
             }
-
+            
+            
         }
 
         private void buttonSelectFolder_Click(object sender, EventArgs e)
@@ -199,7 +206,17 @@ namespace WFA_WallpaperClock
                     return;
                 }
                 else
+                {
                     Settings.ChangeSetting(Settings.settings.wallpaperFolderDirectory, Wallpaper.selectedFolderPath);
+                    string path = Wallpaper.GetNewWallpaper(false);
+
+                    pictureBox1.Image = Image.FromFile(Wallpaper.wallpaperFile.FullName);
+                    pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+
+                    pictureBox1.LoadAsync(path);
+
+                    SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, Wallpaper.BurnNewWallpaper(Wallpaper.wallpaperFile.FullName), SPIF_UPDATEINIFILE);
+                }
             }
 
 
@@ -208,6 +225,21 @@ namespace WFA_WallpaperClock
         private void numericWallpaperTime_ValueChanged(object sender, EventArgs e)
         {
             Settings.ChangeSetting(Settings.settings.minuteOfChangeWallpaper, numericWallpaperTime.Value.ToString());
+        }
+
+        private void checkBoxStartup_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxStartup.Checked)
+            {
+                if (!Settings.IsStartupCreated())
+                    Settings.CreateStartupShortcut();
+            }
+
+            else
+                Settings.DeleteStartupShortcut();
+            
+        
+
         }
     }
 

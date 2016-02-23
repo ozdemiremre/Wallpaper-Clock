@@ -41,6 +41,7 @@
             this.isShuffle = new System.Windows.Forms.CheckBox();
             this.buttonSelectFolder = new System.Windows.Forms.Button();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.checkBoxStartup = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericWallpaperTime)).BeginInit();
             this.SuspendLayout();
@@ -145,11 +146,24 @@
             this.buttonSelectFolder.UseVisualStyleBackColor = true;
             this.buttonSelectFolder.Click += new System.EventHandler(this.buttonSelectFolder_Click);
             // 
+            // checkBoxStartup
+            // 
+            this.checkBoxStartup.AutoSize = true;
+            this.checkBoxStartup.Location = new System.Drawing.Point(13, 215);
+            this.checkBoxStartup.Name = "checkBoxStartup";
+            this.checkBoxStartup.Size = new System.Drawing.Size(115, 17);
+            this.checkBoxStartup.TabIndex = 10;
+            this.checkBoxStartup.Text = "Set as AutoStartup";
+            this.checkBoxStartup.UseVisualStyleBackColor = true;
+            this.checkBoxStartup.CheckedChanged += new System.EventHandler(this.checkBoxStartup_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(713, 261);
+            this.Controls.Add(this.checkBoxStartup);
             this.Controls.Add(this.buttonSelectFolder);
             this.Controls.Add(this.isShuffle);
             this.Controls.Add(this.label1);
@@ -158,6 +172,8 @@
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.buttonSelectColor);
             this.Controls.Add(this.buttonSelectFont);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "Wallpaper Clock";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -181,6 +197,7 @@
         private System.Windows.Forms.Button buttonSelectFolder;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.Button buttonSelectFont;
+        private System.Windows.Forms.CheckBox checkBoxStartup;
     }
 }
 

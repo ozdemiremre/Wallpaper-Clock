@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using Shell32;
+
 
 namespace WFA_WallpaperClock
 {
@@ -12,8 +14,10 @@ namespace WFA_WallpaperClock
 
         public static string rootDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\WallpaperClock";
         public static string settingsDirectory = rootDirectory + "\\WallpaperClockSettings.txt";
+        public static string startupPath = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+        public static string currentPath = System.Windows.Forms.Application.ExecutablePath;
 
-        static string[] settingStrings = new string[8];
+        static string[] settingStrings = new string[9];
 
         public enum settings
         {
@@ -24,7 +28,8 @@ namespace WFA_WallpaperClock
             wallpaperFolderDirectory,
             startPointX,
             startPointY,
-            lastWallpaperLocation
+            lastWallpaperLocation,
+            fontSize
         }
 
         public static void CreateDirectory()
@@ -47,7 +52,8 @@ namespace WFA_WallpaperClock
                 settingStrings[4] = "";                                                                              //WallpaperFolderDirectory
                 settingStrings[5] = "0";
                 settingStrings[6] = "0";
-                settingStrings[7] = "";
+                settingStrings[7] = null;
+                settingStrings[8] = "96";
 
                 File.WriteAllLines(settingsDirectory, settingStrings);
             }
@@ -83,6 +89,9 @@ namespace WFA_WallpaperClock
                 case settings.lastWallpaperLocation:
                     return settingStrings[7];
                     break;
+                case settings.fontSize:
+                    return settingStrings[8];
+                    break;
                 default:
                     return null;
                     break;
@@ -98,6 +107,39 @@ namespace WFA_WallpaperClock
             File.WriteAllLines(settingsDirectory, originalSettings);
         }
 
+        public static bool IsStartupCreated() //If there is a shortcut called WallpaperClock and it's target is current directory.
+        {
+            Shell shell = new Shell();
 
+            if (File.Exists(startupPath + "\\WallpaperClock.lnk"))
+            {
+                Folder folder = shell.NameSpace(startupPath);
+                FolderItem folderItem = folder.ParseName( "WallpaperClock.lnk");
+                Shell32.ShellLinkObject link = folderItem.GetLink as Shell32.ShellLinkObject;
+
+                
+                if (string.Equals(link.Path,currentPath, StringComparison.OrdinalIgnoreCase)) 
+                    return true;
+                
+            }
+            return false;
+        }
+
+        public static void CreateStartupShortcut()
+        {
+            object shDesktop = (object)"Startup";
+            IWshRuntimeLibrary.WshShell shell = new IWshRuntimeLibrary.WshShell();
+            string shortcutAddress = (string)shell.SpecialFolders.Item(ref shDesktop) + @"\WallpaperClock.lnk";
+            IWshRuntimeLibrary.IWshShortcut shortcut = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(shortcutAddress);
+            shortcut.TargetPath = System.Windows.Forms.Application.ExecutablePath;
+            shortcut.Save();
+        }
+
+        public static void DeleteStartupShortcut()
+        {
+            if (IsStartupCreated())
+                File.Delete(startupPath + "\\WallpaperClock.lnk");
+            
+        }
     }
 }

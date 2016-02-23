@@ -22,3 +22,4 @@ C:\Users\Emre Ozdemir\Desktop\Documents\Git Projects\WFA-WallpaperClock\WFA-Wall
 C:\Users\Emre Ozdemir\Desktop\Documents\Git Projects\WFA-WallpaperClock\WFA-WallpaperClock\obj\Debug\WFA_WallpaperClock.MainForm.resources
 C:\Users\Emre Ozdemir\Desktop\Documents\Git Projects\WFA-WallpaperClock\WFA-WallpaperClock\obj\Debug\WFA_WallpaperClock.Properties.Resources.resources
 C:\Users\Emre Ozdemir\Desktop\Documents\Git Projects\WFA-WallpaperClock\WFA-WallpaperClock\obj\Debug\WFA-WallpaperClock.csproj.GenerateResource.Cache
+C:\Users\Emre Ozdemir\Desktop\Documents\Git Projects\WFA-WallpaperClock\WFA-WallpaperClock\obj\Debug\Interop.IWshRuntimeLibrary.dll

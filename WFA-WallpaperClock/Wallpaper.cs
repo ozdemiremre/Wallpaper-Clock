@@ -24,20 +24,22 @@ namespace WFA_WallpaperClock
         static string BurntWallpaperPath = null;
         static public Point startpoint;
         static public Rectangle pictureBoxRectangle;
+
         static Wallpaper()
         {
-            if (!String.IsNullOrWhiteSpace(Settings.ReadSetting(Settings.settings.lastWallpaperLocation))) //If a wallpaper is selected from before.
-            {
+            if (!String.IsNullOrEmpty(Settings.ReadSetting(Settings.settings.lastWallpaperLocation))) //If a wallpaper is selected from before.
                 wallpaperFile = new FileInfo(Settings.ReadSetting(Settings.settings.lastWallpaperLocation));
-            }
-            else
-                wallpaperFile = new FileInfo(getNewWallpaper(false));
 
-            selectedFolderPath = Settings.ReadSetting(Settings.settings.wallpaperFolderDirectory);
+            if (!String.IsNullOrEmpty(Settings.ReadSetting(Settings.settings.wallpaperFolderDirectory)) && !String.IsNullOrWhiteSpace(Settings.ReadSetting(Settings.settings.wallpaperFolderDirectory)))
+                selectedFolderPath = Settings.ReadSetting(Settings.settings.wallpaperFolderDirectory);
+
+            if (!String.IsNullOrEmpty(Settings.ReadSetting(Settings.settings.fontSize)) && !String.IsNullOrWhiteSpace(Settings.ReadSetting(Settings.settings.fontSize)))
+                fontSize = float.Parse( Settings.ReadSetting(Settings.settings.fontSize));
         }
-        static public string burnNewWallpaper(string originalWallpaperPath)   //Burns image with current time and returns the path of the new picture.
+
+        static public string BurnNewWallpaper(string originalWallpaperPath)   //Burns image with current time and returns the path of the new picture.
         {
-            Bitmap wallpaper = new Bitmap(originalWallpaperPath);
+            Image wallpaper= Image.FromFile(originalWallpaperPath);
             Graphics wallpaperGraph = Graphics.FromImage(wallpaper);
             System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
 
@@ -45,26 +47,55 @@ namespace WFA_WallpaperClock
             wallpaperGraph.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Low;
             path.FillMode = System.Drawing.Drawing2D.FillMode.Winding;
 
-            Point relativePoint = new Point((wallpaper.Width * startpoint.X) / pictureBoxRectangle.Width, (wallpaper.Height * startpoint.Y) / pictureBoxRectangle.Height);
-
-            path.AddString(DateTime.Now.ToShortTimeString(), font.FontFamily, (int)font.Style, (float)(fontSize * Convert.ToDouble(wallpaper.Width) / Convert.ToDouble(pictureBoxRectangle.Width)), relativePoint, new StringFormat());
+            path.AddString(DateTime.Now.ToShortTimeString(), font.FontFamily, (int)font.Style, (float)(fontSize * Convert.ToDouble(wallpaper.Width) / Convert.ToDouble(pictureBoxRectangle.Width)), CalculateTheRelativePoint(), new StringFormat());
             wallpaperGraph.DrawPath(new Pen(HSL.GetComplementaryColor(color), 3f), path);
             wallpaperGraph.FillPath(new SolidBrush(Color.FromArgb(255, color)), path);
             BurntWallpaperPath = Settings.rootDirectory + "\\wallpaper.png";
 
+            
             wallpaper.Save(BurntWallpaperPath);
+            wallpaperGraph.Dispose();
+            wallpaper.Dispose();
 
             return BurntWallpaperPath;
         }
 
-        static public string getNewWallpaper(bool isShuffle) //IsShuffle not working atm.
+        static public Point CalculateTheRelativePoint() // This calculates as if the wallpaper fit is "Fill".
+        {
+            Bitmap wallppr = new Bitmap(wallpaperFile.FullName);
+            double wallpaperRatio = Convert.ToDouble(wallppr.Height) / Convert.ToDouble(wallppr.Width);
+            double monitorRatio = Convert.ToDouble(Screen.PrimaryScreen.Bounds.Height) / Convert.ToDouble(Screen.PrimaryScreen.Bounds.Width);
+            Point relativePoint = Point.Empty;
+            double margin;
+
+
+            if (wallpaperRatio < monitorRatio) //Means Width is bigger.
+            {
+                margin = (wallppr.Width - (wallppr.Height / monitorRatio)) / 2;
+                relativePoint.X = ((wallppr.Width * startpoint.X) / pictureBoxRectangle.Width) + Convert.ToInt32(margin);
+                relativePoint.Y = (wallppr.Height * startpoint.Y) / pictureBoxRectangle.Height;
+            }
+
+            else if (wallpaperRatio > monitorRatio) //Means Height is bigger.
+            {
+                margin = (wallppr.Height - (wallppr.Width * monitorRatio)) / 2;
+                relativePoint.X = (wallppr.Width * startpoint.X) / pictureBoxRectangle.Width;
+                relativePoint.Y = (wallppr.Height * startpoint.Y) / pictureBoxRectangle.Height + Convert.ToInt32(margin);
+            }
+
+            else //Means ratios are equal.
+            {
+                relativePoint.X = (wallppr.Width * startpoint.X) / pictureBoxRectangle.Width;
+                relativePoint.Y = (wallppr.Height * startpoint.Y) / pictureBoxRectangle.Height;
+            }
+
+
+            return relativePoint;
+        }
+        static public string GetNewWallpaper(bool isShuffle) //IsShuffle not working atm.
         {
             if (System.IO.Directory.Exists(selectedFolderPath) && selectedFolderPath != null)     //Check f folder exists, folderPath string != null
             {                                                                                                                                              //User is going to *select* a folder. So it already exists. Don't think I need to check again.
-
-#if DEBUG
-                int seed = DateTime.Now.Millisecond;
-#endif 
                 DirectoryInfo dirInfo = new DirectoryInfo(selectedFolderPath);
                 FileInfo[] fileInfoJPG = dirInfo.GetFiles("*.jpg");
                 FileInfo[] fileInfoPNG = dirInfo.GetFiles("*.png");
@@ -83,11 +114,11 @@ namespace WFA_WallpaperClock
                 else
                     JPGorPNG = 0;
 
-                
+
 
                 if (fileInfoJPG.Length != 0 && fileInfoPNG.Length != 0)
                     JPGorPNG = rnd.Next(0, 2);
-                
+
 
                 if (JPGorPNG == 0)
                     wallpaperFile = fileInfoJPG[rnd.Next(fileInfoJPG.Length)];
@@ -101,7 +132,6 @@ namespace WFA_WallpaperClock
                 Console.WriteLine("File Info JPG size: " + fileInfoJPG.Length);
                 Console.WriteLine("File Info PNG size: " + fileInfoPNG.Length);
                 Console.WriteLine("JPG or PNG: " + JPGorPNG);
-                Console.WriteLine("Seed in milisecond is: " + seed);
 #endif
 
                 Settings.ChangeSetting(Settings.settings.lastWallpaperLocation, wallpaperFile.FullName);
