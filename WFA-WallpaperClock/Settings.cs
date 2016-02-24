@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Shell32;
+using System;
 using System.IO;
-using Shell32;
 
 
 namespace WFA_WallpaperClock
@@ -18,7 +14,9 @@ namespace WFA_WallpaperClock
         public static string currentPath = System.Windows.Forms.Application.ExecutablePath;
 
         static string[] settingStrings = new string[9];
-
+        /// <summary>
+        /// Enum of the settings.
+        /// </summary>
         public enum settings
         {
             font = 0,
@@ -31,7 +29,9 @@ namespace WFA_WallpaperClock
             lastWallpaperLocation,
             fontSize
         }
-
+        /// <summary>
+        /// Creates folders if they don't exist.
+        /// </summary>
         public static void CreateDirectory()
         {
             if (!Directory.Exists(rootDirectory))
@@ -39,7 +39,9 @@ namespace WFA_WallpaperClock
                 Directory.CreateDirectory(rootDirectory);
             }
         }
-
+        /// <summary>
+        /// Creates settings file with default settings.
+        /// </summary>
         public static void CreateSettings()
         {
             if (!File.Exists(settingsDirectory))
@@ -58,7 +60,11 @@ namespace WFA_WallpaperClock
                 File.WriteAllLines(settingsDirectory, settingStrings);
             }
         }
-
+        /// <summary>
+        /// Reads the setting from the file and returns it as string.
+        /// </summary>
+        /// <param name="SettingToRead">Index of the setting to read.</param>
+        /// <returns></returns>
         public static string ReadSetting(settings SettingToRead)
         {
             settingStrings = File.ReadAllLines(settingsDirectory);
@@ -97,7 +103,11 @@ namespace WFA_WallpaperClock
                     break;
             }
         }
-
+        /// <summary>
+        /// Changes the settings file at AppData/Local/WallpaperClock/WallpaperClockSettings.
+        /// </summary>
+        /// <param name="settingIndex">Index of the setting to be changed.</param>
+        /// <param name="setting">Content of the setting.</param>
         public static void ChangeSetting(settings settingIndex, string setting) // As of now, it doesn't check the validity of the setting.For example, if the passed value is bool or not for isShuffle.
         {
             string[] originalSettings = File.ReadAllLines(settingsDirectory);
@@ -106,7 +116,10 @@ namespace WFA_WallpaperClock
 
             File.WriteAllLines(settingsDirectory, originalSettings);
         }
-
+        /// <summary>
+        /// Checks wheter if the shortcut is created.
+        /// </summary>
+        /// <returns></returns>
         public static bool IsStartupCreated() //If there is a shortcut called WallpaperClock and it's target is current directory.
         {
             Shell shell = new Shell();
@@ -114,17 +127,19 @@ namespace WFA_WallpaperClock
             if (File.Exists(startupPath + "\\WallpaperClock.lnk"))
             {
                 Folder folder = shell.NameSpace(startupPath);
-                FolderItem folderItem = folder.ParseName( "WallpaperClock.lnk");
+                FolderItem folderItem = folder.ParseName("WallpaperClock.lnk");
                 Shell32.ShellLinkObject link = folderItem.GetLink as Shell32.ShellLinkObject;
 
-                
-                if (string.Equals(link.Path,currentPath, StringComparison.OrdinalIgnoreCase)) 
+
+                if (string.Equals(link.Path, currentPath, StringComparison.OrdinalIgnoreCase))
                     return true;
-                
+
             }
             return false;
         }
-
+        /// <summary>
+        /// Creates a Shortcut of the current .exe at the Startup folder.
+        /// </summary>
         public static void CreateStartupShortcut()
         {
             object shDesktop = (object)"Startup";
@@ -134,12 +149,14 @@ namespace WFA_WallpaperClock
             shortcut.TargetPath = System.Windows.Forms.Application.ExecutablePath;
             shortcut.Save();
         }
-
+        /// <summary>
+        /// Deletes the startup shortcut if it exists.
+        /// </summary>
         public static void DeleteStartupShortcut()
         {
             if (IsStartupCreated())
                 File.Delete(startupPath + "\\WallpaperClock.lnk");
-            
+
         }
     }
 }

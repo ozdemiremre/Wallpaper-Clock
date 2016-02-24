@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace WFA_WallpaperClock
 {
@@ -25,21 +22,30 @@ namespace WFA_WallpaperClock
         static public Point startpoint;
         static public Rectangle pictureBoxRectangle;
 
+        [DllImport("user32.dll")]
+        private static extern bool SystemParametersInfo(uint uiAction, uint uiParam, string pvParam, uint fWinIni);
+
         static Wallpaper()
         {
             if (!String.IsNullOrEmpty(Settings.ReadSetting(Settings.settings.lastWallpaperLocation))) //If a wallpaper is selected from before.
                 wallpaperFile = new FileInfo(Settings.ReadSetting(Settings.settings.lastWallpaperLocation));
 
-            if (!String.IsNullOrEmpty(Settings.ReadSetting(Settings.settings.wallpaperFolderDirectory)) && !String.IsNullOrWhiteSpace(Settings.ReadSetting(Settings.settings.wallpaperFolderDirectory)))
+            if (!String.IsNullOrEmpty(Settings.ReadSetting(Settings.settings.wallpaperFolderDirectory)) && !String.IsNullOrWhiteSpace(Settings.ReadSetting(Settings.settings.wallpaperFolderDirectory))) //If wallpaper folder selected from before.
                 selectedFolderPath = Settings.ReadSetting(Settings.settings.wallpaperFolderDirectory);
 
-            if (!String.IsNullOrEmpty(Settings.ReadSetting(Settings.settings.fontSize)) && !String.IsNullOrWhiteSpace(Settings.ReadSetting(Settings.settings.fontSize)))
-                fontSize = float.Parse( Settings.ReadSetting(Settings.settings.fontSize));
+
+            if (!String.IsNullOrEmpty(Settings.ReadSetting(Settings.settings.fontSize)) && !String.IsNullOrWhiteSpace(Settings.ReadSetting(Settings.settings.fontSize))) //If this program has run before and fontsize has been calculated.
+                fontSize = float.Parse(Settings.ReadSetting(Settings.settings.fontSize));
         }
 
-        static public string BurnNewWallpaper(string originalWallpaperPath)   //Burns image with current time and returns the path of the new picture.
+        /// <summary>
+        /// Bakes the current time on the original wallpaper and returns the path of the baked wallpaper.
+        /// </summary>
+        /// <param name="originalWallpaperPath">The full path of the orignial wallpaper.</param>
+        /// <returns></returns>
+        static public string BurnNewWallpaper(string originalWallpaperPath)
         {
-            Image wallpaper= Image.FromFile(originalWallpaperPath);
+            Image wallpaper = Image.FromFile(originalWallpaperPath);
             Graphics wallpaperGraph = Graphics.FromImage(wallpaper);
             System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
 
@@ -52,7 +58,7 @@ namespace WFA_WallpaperClock
             wallpaperGraph.FillPath(new SolidBrush(Color.FromArgb(255, color)), path);
             BurntWallpaperPath = Settings.rootDirectory + "\\wallpaper.png";
 
-            
+
             wallpaper.Save(BurntWallpaperPath);
             wallpaperGraph.Dispose();
             wallpaper.Dispose();
@@ -60,6 +66,10 @@ namespace WFA_WallpaperClock
             return BurntWallpaperPath;
         }
 
+        /// <summary>
+        /// Calculates the relative Top-Left point of the rectangle, depending of the resolution of the wallpaper. W.I.P.
+        /// </summary>
+        /// <returns></returns>
         static public Point CalculateTheRelativePoint() // This calculates as if the wallpaper fit is "Fill".
         {
             Bitmap wallppr = new Bitmap(wallpaperFile.FullName);
@@ -92,51 +102,33 @@ namespace WFA_WallpaperClock
 
             return relativePoint;
         }
-        static public string GetNewWallpaper(bool isShuffle) //IsShuffle not working atm.
+
+        /// <summary>
+        /// Finds a new JPG or PNG file from the selected file. isShuffle is not working atm.
+        /// </summary>
+        static public string GetNewWallpaper(bool isShuffle)
         {
             if (System.IO.Directory.Exists(selectedFolderPath) && selectedFolderPath != null)     //Check f folder exists, folderPath string != null
             {                                                                                                                                              //User is going to *select* a folder. So it already exists. Don't think I need to check again.
-                DirectoryInfo dirInfo = new DirectoryInfo(selectedFolderPath);
-                FileInfo[] fileInfoJPG = dirInfo.GetFiles("*.jpg");
-                FileInfo[] fileInfoPNG = dirInfo.GetFiles("*.png");
-
-                int JPGorPNG;
+                string[] fileInfoJPG = Directory.GetFiles(selectedFolderPath, "*.jpg", SearchOption.AllDirectories);
+                string[] fileInfoPNG = Directory.GetFiles(selectedFolderPath, "*.png", SearchOption.AllDirectories);
 
                 if (fileInfoJPG.Length == 0 && fileInfoPNG.Length == 0)
                 {
                     MessageBox.Show("No images found at the selected path.\n Did you move images from the folder?", "ERROR", MessageBoxButtons.OK);
                     return null;
                 }
-
-                if (fileInfoJPG.Length == 0)    //Because I checked if the folder has JPG or PNG files, it has at least a JPG or a PNG.
-                    JPGorPNG = 1;
-
                 else
-                    JPGorPNG = 0;
+                {
+                    string[] pictureFiles = fileInfoJPG.Concat(fileInfoPNG).ToArray();
 
+                    wallpaperFile = new FileInfo(pictureFiles[rnd.Next(pictureFiles.Length)]);
 
+                    Settings.ChangeSetting(Settings.settings.lastWallpaperLocation, wallpaperFile.FullName);
 
-                if (fileInfoJPG.Length != 0 && fileInfoPNG.Length != 0)
-                    JPGorPNG = rnd.Next(0, 2);
+                    return wallpaperFile.FullName;
+                }
 
-
-                if (JPGorPNG == 0)
-                    wallpaperFile = fileInfoJPG[rnd.Next(fileInfoJPG.Length)];
-
-                else
-                    wallpaperFile = fileInfoPNG[rnd.Next(fileInfoPNG.Length)];
-
-
-
-#if DEBUG
-                Console.WriteLine("File Info JPG size: " + fileInfoJPG.Length);
-                Console.WriteLine("File Info PNG size: " + fileInfoPNG.Length);
-                Console.WriteLine("JPG or PNG: " + JPGorPNG);
-#endif
-
-                Settings.ChangeSetting(Settings.settings.lastWallpaperLocation, wallpaperFile.FullName);
-
-                return wallpaperFile.FullName;
             }
 
             else

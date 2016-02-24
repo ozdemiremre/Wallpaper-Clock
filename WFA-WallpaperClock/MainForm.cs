@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace WFA_WallpaperClock
 {
@@ -21,7 +17,6 @@ namespace WFA_WallpaperClock
         bool isDrawing = false;
         public Point startpoint;
         Rectangle theRectangle = new Rectangle(new Point(0, 0), new Size(0, 0));
-
 
         [DllImport("user32.dll")]
         private static extern bool SystemParametersInfo(uint uiAction, uint uiParam, string pvParam, uint fWinIni);
@@ -38,7 +33,7 @@ namespace WFA_WallpaperClock
 
             InitializeComponent();
 
-            pictureBox1.Width = Convert.ToInt32(Convert.ToDouble(pictureBox1.Height) / ratio) ;
+            pictureBox1.Width = Convert.ToInt32(Convert.ToDouble(pictureBox1.Height) / ratio);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
 
             color = Color.FromArgb(Convert.ToInt32(Settings.ReadSetting(Settings.settings.color)));
@@ -55,6 +50,11 @@ namespace WFA_WallpaperClock
             Wallpaper.pictureBoxRectangle.Height = pictureBox1.Height;
             Wallpaper.pictureBoxRectangle.Width = pictureBox1.Width;
 
+            if (!String.IsNullOrEmpty(Settings.ReadSetting(Settings.settings.wallpaperFolderDirectory)) && !String.IsNullOrWhiteSpace(Settings.ReadSetting(Settings.settings.wallpaperFolderDirectory))) //If wallpaper folder selected from before.
+            {
+                SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, Wallpaper.BurnNewWallpaper(Wallpaper.wallpaperFile.FullName), SPIF_UPDATEINIFILE);
+                pictureBox1.LoadAsync(Wallpaper.wallpaperFile.FullName);
+            }
             checkBoxStartup.Checked = Settings.IsStartupCreated();
         }
 
@@ -90,7 +90,7 @@ namespace WFA_WallpaperClock
         {
             Control control = (Control)sender;
             startpoint = e.Location;
-           
+
             theRectangle.Width = 0;
             theRectangle.Height = 0;
 
@@ -172,21 +172,23 @@ namespace WFA_WallpaperClock
                     timerCounter = 0;
 
                     string path = Wallpaper.GetNewWallpaper(false); //isShuffle not working atm
+                    if (path != null)
+                    {
+                        pictureBox1.Image = Image.FromFile(Wallpaper.wallpaperFile.FullName);
+                        pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
 
-                    pictureBox1.Image = Image.FromFile(Wallpaper.wallpaperFile.FullName);
-                    pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+                        pictureBox1.LoadAsync(path);
 
-                    pictureBox1.LoadAsync(path);
-
-                    SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, Wallpaper.BurnNewWallpaper(Wallpaper.wallpaperFile.FullName), SPIF_UPDATEINIFILE);
+                        SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, Wallpaper.BurnNewWallpaper(Wallpaper.wallpaperFile.FullName), SPIF_UPDATEINIFILE);
+                    }
                 }
 
                 else if (timerCounter > Convert.ToInt32(numericWallpaperTime.Value)) //To stop timerCounter going over the max minutes.
                     timerCounter = 0;
 
             }
-            
-            
+
+
         }
 
         private void buttonSelectFolder_Click(object sender, EventArgs e)
@@ -213,9 +215,13 @@ namespace WFA_WallpaperClock
                     pictureBox1.Image = Image.FromFile(Wallpaper.wallpaperFile.FullName);
                     pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
 
-                    pictureBox1.LoadAsync(path);
+                    if (path != null)
+                    {
+                        pictureBox1.LoadAsync(path);
 
-                    SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, Wallpaper.BurnNewWallpaper(Wallpaper.wallpaperFile.FullName), SPIF_UPDATEINIFILE);
+                        SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, Wallpaper.BurnNewWallpaper(Wallpaper.wallpaperFile.FullName), SPIF_UPDATEINIFILE);
+                    }
+
                 }
             }
 
@@ -237,8 +243,8 @@ namespace WFA_WallpaperClock
 
             else
                 Settings.DeleteStartupShortcut();
-            
-        
+
+
 
         }
     }

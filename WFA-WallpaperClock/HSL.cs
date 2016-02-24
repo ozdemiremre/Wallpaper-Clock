@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
 namespace WFA_WallpaperClock
 {
@@ -12,6 +8,12 @@ namespace WFA_WallpaperClock
         public double S;
         public double L;
 
+
+        /// <summary>
+        /// Calculates the dominant color of an image/Bitmap.
+        /// </summary>
+        /// <param name="bmp"></param>
+        /// <returns></returns>
         public static Color getDominantColor(Bitmap bmp)
         {
             //Used for tally
@@ -40,7 +42,11 @@ namespace WFA_WallpaperClock
 
             return Color.FromArgb(Convert.ToInt32(r), Convert.ToInt32(g), Convert.ToInt32(b));
         }
-
+        /// <summary>
+        /// Converts RGB to HSL.
+        /// </summary>
+        /// <param name="RGB"></param>
+        /// <returns></returns>
         public static HSL RGBToHSL(Color RGB)
         {
             HSL localHSL = new HSL();
@@ -88,10 +94,13 @@ namespace WFA_WallpaperClock
             }
 
 
-
             return localHSL;
         }
-
+        /// <summary>
+        /// Takes normal HSL and rotates the Hue by 180 degrees and returns the new HSL value.
+        /// </summary>
+        /// <param name="normalHSL"></param>
+        /// <returns></returns>
         public static HSL calculateTheOppositeHue(HSL normalHSL)
         {
             HSL newHue = normalHSL;
@@ -100,7 +109,11 @@ namespace WFA_WallpaperClock
 
             return newHue;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hsl"></param>
+        /// <returns></returns>
         public static Color HSLToRGB(HSL hsl)
         {
             double R;
@@ -133,7 +146,13 @@ namespace WFA_WallpaperClock
 
             return cl;
         }
-
+        /// <summary>
+        /// Converts Hue to RGB.
+        /// </summary>
+        /// <param name="v1"></param>
+        /// <param name="v2"></param>
+        /// <param name="vH"></param>
+        /// <returns></returns>
         public static double HueToRGB(double v1, double v2, double vH)
         {
             if (vH < 0.0d)
@@ -148,7 +167,11 @@ namespace WFA_WallpaperClock
                 return (v1 + (v2 - v1) * ((2.0d / 3.0d) - vH) * 6.0d);
             return (v1);
         }
-
+        /// <summary>
+        /// Returns the complementary color of the original color.
+        /// </summary>
+        /// <param name="_originalColor">Original color that is going to be calculated.</param>
+        /// <returns></returns>
         public static Color GetComplementaryColor(Color _originalColor)
         {
             HSL newHSL = RGBToHSL(_originalColor);
