@@ -199,9 +199,8 @@ namespace WFA_WallpaperClock
             {
                 Wallpaper.selectedFolderPath = folderBrowserDialog1.SelectedPath;
 
-                DirectoryInfo dirInfo = new DirectoryInfo(Wallpaper.selectedFolderPath);
-                FileInfo[] fileInfoJPG = dirInfo.GetFiles("*.jpg");
-                FileInfo[] fileInfoPNG = dirInfo.GetFiles("*.png");
+                string[] fileInfoJPG = Directory.GetFiles(Wallpaper.selectedFolderPath, "*.jpg", SearchOption.AllDirectories);
+                string[] fileInfoPNG = Directory.GetFiles(Wallpaper.selectedFolderPath, "*.png", SearchOption.AllDirectories);
 
                 if (fileInfoJPG.Length == 0 && fileInfoPNG.Length == 0)
                 {

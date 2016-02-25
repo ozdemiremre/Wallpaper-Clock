@@ -124,7 +124,7 @@ namespace WFA_WallpaperClock
                 Shell32.ShellLinkObject link = folderItem.GetLink as Shell32.ShellLinkObject;
 
 
-                if (string.Equals(link.Path, currentPath, StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(link.Path, currentPath, StringComparison.OrdinalIgnoreCase)) //If the current shortcut's target equals current .exe's location.
                     return true;
 
             }
