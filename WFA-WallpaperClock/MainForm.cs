@@ -252,6 +252,11 @@ namespace WFA_WallpaperClock
         {
             Settings.ChangeSetting(Settings.settings.shuffle, isShuffle.Checked.ToString());
         }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, Settings.ReadSetting(Settings.settings.lastWallpaperLocation), SPIF_UPDATEINIFILE);
+        }
     }
 
 }

@@ -177,6 +177,7 @@
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "Wallpaper Clock";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericWallpaperTime)).EndInit();
             this.ResumeLayout(false);
