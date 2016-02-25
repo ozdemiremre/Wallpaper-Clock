@@ -13,7 +13,7 @@ namespace WFA_WallpaperClock
         public static string startupPath = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
         public static string currentPath = System.Windows.Forms.Application.ExecutablePath;
 
-        static string[] settingStrings = new string[9];
+        static string[] settingStrings = new string[10];
         /// <summary>
         /// Enum of the settings.
         /// </summary>
@@ -27,7 +27,8 @@ namespace WFA_WallpaperClock
             startPointX,
             startPointY,
             lastWallpaperLocation,
-            fontSize
+            fontSize,
+            lastWallpaperIndex,
         }
         /// <summary>
         /// Creates folders if they don't exist.
@@ -49,14 +50,14 @@ namespace WFA_WallpaperClock
                 File.Create(settingsDirectory).Close();
                 settingStrings[0] = MainForm.DefaultFont.Name;                                  //Font
                 settingStrings[1] = MainForm.DefaultBackColor.ToArgb().ToString(); //Color
-                settingStrings[2] = "0";                                                                            //Shuffle
+                settingStrings[2] = "False";                                                                       //Shuffle
                 settingStrings[3] = "1";                                                                             //minuteOfChangeWallpaper
                 settingStrings[4] = "";                                                                              //WallpaperFolderDirectory
-                settingStrings[5] = "0";
-                settingStrings[6] = "0";
-                settingStrings[7] = null;
-                settingStrings[8] = "96";
-
+                settingStrings[5] = "0";                                                                           //StartPointX
+                settingStrings[6] = "0";                                                                            //StartPointY
+                settingStrings[7] = null;                                                                           //LastWallpaperLocation
+                settingStrings[8] = "96";                                                                       //FontSize
+                settingStrings[9] = "0";
                 File.WriteAllLines(settingsDirectory, settingStrings);
             }
         }
@@ -73,34 +74,26 @@ namespace WFA_WallpaperClock
             {
                 case settings.font:
                     return settingStrings[0];
-                    break;
                 case settings.color:
                     return settingStrings[1];
-                    break;
                 case settings.shuffle:
                     return settingStrings[2];
-                    break;
                 case settings.minuteOfChangeWallpaper:
                     return settingStrings[3];
-                    break;
                 case settings.wallpaperFolderDirectory:
                     return settingStrings[4];
-                    break;
                 case settings.startPointX:
                     return settingStrings[5];
-                    break;
                 case settings.startPointY:
                     return settingStrings[6];
-                    break;
                 case settings.lastWallpaperLocation:
                     return settingStrings[7];
-                    break;
                 case settings.fontSize:
                     return settingStrings[8];
-                    break;
+                case settings.lastWallpaperIndex:
+                    return settingStrings[9];
                 default:
                     return null;
-                    break;
             }
         }
         /// <summary>

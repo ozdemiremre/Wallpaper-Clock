@@ -135,6 +135,7 @@
             this.isShuffle.TabIndex = 8;
             this.isShuffle.Text = "Shuffle";
             this.isShuffle.UseVisualStyleBackColor = true;
+            this.isShuffle.CheckedChanged += new System.EventHandler(this.isShuffle_CheckedChanged);
             // 
             // buttonSelectFolder
             // 

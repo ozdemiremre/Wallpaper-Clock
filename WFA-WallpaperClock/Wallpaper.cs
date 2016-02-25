@@ -22,6 +22,7 @@ namespace WFA_WallpaperClock
         static public Point startpoint;
         static public Rectangle pictureBoxRectangle;
 
+
         [DllImport("user32.dll")]
         private static extern bool SystemParametersInfo(uint uiAction, uint uiParam, string pvParam, uint fWinIni);
 
@@ -36,6 +37,8 @@ namespace WFA_WallpaperClock
 
             if (!String.IsNullOrEmpty(Settings.ReadSetting(Settings.settings.fontSize)) && !String.IsNullOrWhiteSpace(Settings.ReadSetting(Settings.settings.fontSize))) //If this program has run before and fontsize has been calculated.
                 fontSize = float.Parse(Settings.ReadSetting(Settings.settings.fontSize));
+
+
         }
 
         /// <summary>
@@ -106,8 +109,9 @@ namespace WFA_WallpaperClock
         /// <summary>
         /// Finds a new JPG or PNG file from the selected file. isShuffle is not working atm.
         /// </summary>
-        static public string GetNewWallpaper(bool isShuffle)
+        static public string GetNewWallpaper(bool isShuffle) //Atm number of pictures should be limited to UShort.Max(64,000-ish). Possible overflow.
         {
+
             if (System.IO.Directory.Exists(selectedFolderPath) && selectedFolderPath != null)     //Check f folder exists, folderPath string != null
             {                                                                                                                                              //User is going to *select* a folder. So it already exists. Don't think I need to check again.
                 string[] fileInfoJPG = Directory.GetFiles(selectedFolderPath, "*.jpg", SearchOption.AllDirectories);
@@ -120,9 +124,31 @@ namespace WFA_WallpaperClock
                 }
                 else
                 {
+                    ushort wallpaperIndex = Convert.ToUInt16(Settings.ReadSetting(Settings.settings.lastWallpaperIndex));
+
                     string[] pictureFiles = fileInfoJPG.Concat(fileInfoPNG).ToArray();
 
-                    wallpaperFile = new FileInfo(pictureFiles[rnd.Next(pictureFiles.Length)]);
+                    Array.Sort(pictureFiles);
+
+                    if (isShuffle)
+                    {
+                        wallpaperIndex = Convert.ToUInt16(rnd.Next(pictureFiles.Length));
+                        wallpaperFile = new FileInfo(pictureFiles[wallpaperIndex]);
+                        Settings.ChangeSetting(Settings.settings.lastWallpaperIndex, wallpaperIndex.ToString());
+                    }
+
+                    else
+                    {
+
+                        if (wallpaperIndex >= pictureFiles.Length)
+                            wallpaperIndex = 0;
+
+                        wallpaperFile = new FileInfo(pictureFiles[wallpaperIndex]);
+
+                        wallpaperIndex++;
+
+                        Settings.ChangeSetting(Settings.settings.lastWallpaperIndex, wallpaperIndex.ToString());
+                    }
 
                     Settings.ChangeSetting(Settings.settings.lastWallpaperLocation, wallpaperFile.FullName);
 

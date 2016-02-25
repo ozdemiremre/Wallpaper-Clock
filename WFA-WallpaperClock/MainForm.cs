@@ -55,7 +55,9 @@ namespace WFA_WallpaperClock
                 SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, Wallpaper.BurnNewWallpaper(Wallpaper.wallpaperFile.FullName), SPIF_UPDATEINIFILE);
                 pictureBox1.LoadAsync(Wallpaper.wallpaperFile.FullName);
             }
+
             checkBoxStartup.Checked = Settings.IsStartupCreated();
+            isShuffle.Checked = Convert.ToBoolean(Settings.ReadSetting(Settings.settings.shuffle));
         }
 
         private void buttonChooseFont_Click(object sender, EventArgs e)
@@ -171,7 +173,7 @@ namespace WFA_WallpaperClock
                 {
                     timerCounter = 0;
 
-                    string path = Wallpaper.GetNewWallpaper(false); //isShuffle not working atm
+                    string path = Wallpaper.GetNewWallpaper(isShuffle.Checked); //isShuffle not working atm
                     if (path != null)
                     {
                         pictureBox1.Image = Image.FromFile(Wallpaper.wallpaperFile.FullName);
@@ -210,7 +212,7 @@ namespace WFA_WallpaperClock
                 else
                 {
                     Settings.ChangeSetting(Settings.settings.wallpaperFolderDirectory, Wallpaper.selectedFolderPath);
-                    string path = Wallpaper.GetNewWallpaper(false);
+                    string path = Wallpaper.GetNewWallpaper(isShuffle.Checked);
 
                     pictureBox1.Image = Image.FromFile(Wallpaper.wallpaperFile.FullName);
                     pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
@@ -244,8 +246,11 @@ namespace WFA_WallpaperClock
             else
                 Settings.DeleteStartupShortcut();
 
+        }
 
-
+        private void isShuffle_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.ChangeSetting(Settings.settings.shuffle, isShuffle.Checked.ToString());
         }
     }
 

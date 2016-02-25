@@ -12,7 +12,7 @@ namespace WFA_WallpaperClock
         /// <summary>
         /// Calculates the dominant color of an image/Bitmap.
         /// </summary>
-        /// <param name="bmp"></param>
+        /// <param name="bmp">Bitmap to calculate.</param>
         /// <returns></returns>
         public static Color getDominantColor(Bitmap bmp)
         {
@@ -45,7 +45,7 @@ namespace WFA_WallpaperClock
         /// <summary>
         /// Converts RGB to HSL.
         /// </summary>
-        /// <param name="RGB"></param>
+        /// <param name="RGB">Color to calculate.</param>
         /// <returns></returns>
         public static HSL RGBToHSL(Color RGB)
         {
@@ -99,7 +99,7 @@ namespace WFA_WallpaperClock
         /// <summary>
         /// Takes normal HSL and rotates the Hue by 180 degrees and returns the new HSL value.
         /// </summary>
-        /// <param name="normalHSL"></param>
+        /// <param name="normalHSL">HSL to calculate.</param>
         /// <returns></returns>
         public static HSL calculateTheOppositeHue(HSL normalHSL)
         {
