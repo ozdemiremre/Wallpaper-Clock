@@ -54,10 +54,14 @@ namespace WFA_WallpaperClock
             {
                 SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, Wallpaper.BurnNewWallpaper(Wallpaper.wallpaperFile.FullName), SPIF_UPDATEINIFILE);
                 pictureBox1.LoadAsync(Wallpaper.wallpaperFile.FullName);
+
+                fileSystemWatcher1.Path = Wallpaper.selectedFolderPath;
             }
 
             checkBoxStartup.Checked = Settings.IsStartupCreated();
             isShuffle.Checked = Convert.ToBoolean(Settings.ReadSetting(Settings.settings.shuffle));
+
+
         }
 
         private void buttonChooseFont_Click(object sender, EventArgs e)
@@ -255,6 +259,20 @@ namespace WFA_WallpaperClock
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, Settings.ReadSetting(Settings.settings.lastWallpaperLocation), SPIF_UPDATEINIFILE);
+        }
+
+        private void fileSystemWatcher1_Deleted(object sender, FileSystemEventArgs e)
+        {
+            if (Directory.GetFiles(Wallpaper.selectedFolderPath, "*.jpg", SearchOption.AllDirectories).Length == 0 && Directory.GetFiles(Wallpaper.selectedFolderPath, "*.png", SearchOption.AllDirectories).Length == 0)
+            {
+                Wallpaper.selectedFolderPath = null;
+                MessageBox.Show("No pictures detected in selected folder.\n Did you delete them?", "ERROR", MessageBoxButtons.OK);
+            }
+        }
+
+        private void fileSystemWatcher1_Created(object sender, FileSystemEventArgs e)
+        {
+            Wallpaper.ScanSelectedFolder();
         }
     }
 
