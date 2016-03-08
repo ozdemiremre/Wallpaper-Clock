@@ -4,7 +4,7 @@
   <description asmv2:iconFile="Halloween-Broom-Brush-icon.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="WFA-WallpaperClock" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <assemblyIdentity name="WFA-WallpaperClock" version="1.0.0.0" publicKeyToken="DCA21F82CF80109A" language="neutral" processorArchitecture="msil" />
     <commandLine file="WFA-WallpaperClock.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -43,26 +43,26 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Interop.Shell32.dll" size="38912">
-      <assemblyIdentity name="Interop.Shell32" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Interop.Shell32.dll" size="39424">
+      <assemblyIdentity name="Interop.Shell32" version="1.0.0.0" publicKeyToken="DCA21F82CF80109A" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>TQlifG/Kg0BdtodPExY3N3ZEj2YN30KS+RgbkGnW/DY=</dsig:DigestValue>
+        <dsig:DigestValue>VfD+I6Pd+YGjBQLVEpRorJ4nGQNzJUYsGvgIMGWRkRI=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="WFA-WallpaperClock.exe" size="227336">
-      <assemblyIdentity name="WFA-WallpaperClock" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="WFA-WallpaperClock.exe" size="227848">
+      <assemblyIdentity name="WFA-WallpaperClock" version="1.0.0.0" publicKeyToken="DCA21F82CF80109A" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>+Hup+eEcP+gDotpHTzlEat1yyNeFdYBVAeT2vte4+hk=</dsig:DigestValue>
+        <dsig:DigestValue>z1ULBcHuWlDbUzSeFqftM01UBg2ZwTMmat6Oj6CJtMk=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

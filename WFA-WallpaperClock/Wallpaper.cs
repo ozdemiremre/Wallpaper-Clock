@@ -53,7 +53,8 @@ namespace WFA_WallpaperClock
         static public string BurnNewWallpaper(string originalWallpaperPath)
         {
             Image wallpaper = Image.FromFile(originalWallpaperPath);
-            Graphics wallpaperGraph = Graphics.FromImage(wallpaper);
+            Bitmap bufferBtmp = new Bitmap(wallpaper);
+            Graphics wallpaperGraph = Graphics.FromImage(bufferBtmp);
             System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
 
             wallpaperGraph.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
@@ -65,10 +66,10 @@ namespace WFA_WallpaperClock
             wallpaperGraph.FillPath(new SolidBrush(Color.FromArgb(255, color)), path);
             BurntWallpaperPath = Settings.rootDirectory + "\\wallpaper.png";
 
-
-            wallpaper.Save(BurntWallpaperPath);
-            wallpaperGraph.Dispose();
+            bufferBtmp.Save(BurntWallpaperPath);
+            bufferBtmp.Dispose();
             wallpaper.Dispose();
+            wallpaperGraph.Dispose();
 
             return BurntWallpaperPath;
         }
