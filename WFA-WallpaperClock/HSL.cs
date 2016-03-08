@@ -110,9 +110,9 @@ namespace WFA_WallpaperClock
             return newHue;
         }
         /// <summary>
-        /// 
+        /// Converts HSL to RGB.
         /// </summary>
-        /// <param name="hsl"></param>
+        /// <param name="hsl">HSL that will be converted to RGB.</param>
         /// <returns></returns>
         public static Color HSLToRGB(HSL hsl)
         {
