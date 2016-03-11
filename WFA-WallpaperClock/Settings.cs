@@ -13,7 +13,7 @@ namespace WFA_WallpaperClock
         public static string startupPath = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
         public static string currentPath = System.Windows.Forms.Application.ExecutablePath;
 
-        static string[] settingStrings = new string[10];
+        static string[] settingStrings = new string[11];
         /// <summary>
         /// Enum of the settings.
         /// </summary>
@@ -29,6 +29,7 @@ namespace WFA_WallpaperClock
             lastWallpaperLocation,
             fontSize,
             lastWallpaperIndex,
+            startMinimized
         }
         /// <summary>
         /// Creates folders if they don't exist.
@@ -58,6 +59,7 @@ namespace WFA_WallpaperClock
                 settingStrings[7] = null;                                                                           //LastWallpaperLocation
                 settingStrings[8] = "96";                                                                       //FontSize
                 settingStrings[9] = "0";
+                settingStrings[10] = "False";
                 File.WriteAllLines(settingsDirectory, settingStrings);
             }
         }
@@ -92,6 +94,8 @@ namespace WFA_WallpaperClock
                     return settingStrings[8];
                 case settings.lastWallpaperIndex:
                     return settingStrings[9];
+                case settings.startMinimized:
+                    return settingStrings[10];
                 default:
                     return null;
             }

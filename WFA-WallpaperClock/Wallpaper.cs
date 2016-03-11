@@ -126,7 +126,7 @@ namespace WFA_WallpaperClock
 
                 Array.Sort(pictureFiles);
 
-                if (isShuffle)
+                if (!isShuffle)
                 {
                     wallpaperIndex = Convert.ToUInt16(rnd.Next(pictureFiles.Length));
                     wallpaperFile = new FileInfo(pictureFiles[wallpaperIndex]);

@@ -45,6 +45,8 @@
             this.checkBoxStartup = new System.Windows.Forms.CheckBox();
             this.fileSystemWatcher1 = new System.IO.FileSystemWatcher();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.checkBoxMinimized = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericWallpaperTime)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).BeginInit();
@@ -52,6 +54,7 @@
             // 
             // buttonSelectFont
             // 
+            this.buttonSelectFont.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.buttonSelectFont.Location = new System.Drawing.Point(13, 13);
             this.buttonSelectFont.Name = "buttonSelectFont";
             this.buttonSelectFont.Size = new System.Drawing.Size(113, 23);
@@ -59,9 +62,11 @@
             this.buttonSelectFont.Text = "Select Font";
             this.buttonSelectFont.UseVisualStyleBackColor = true;
             this.buttonSelectFont.Click += new System.EventHandler(this.buttonChooseFont_Click);
+            this.buttonSelectFont.MouseHover += new System.EventHandler(this.buttonSelectFont_MouseHover);
             // 
             // buttonSelectColor
             // 
+            this.buttonSelectColor.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.buttonSelectColor.Location = new System.Drawing.Point(13, 64);
             this.buttonSelectColor.Name = "buttonSelectColor";
             this.buttonSelectColor.Size = new System.Drawing.Size(113, 23);
@@ -69,6 +74,7 @@
             this.buttonSelectColor.Text = "Select Color";
             this.buttonSelectColor.UseVisualStyleBackColor = true;
             this.buttonSelectColor.Click += new System.EventHandler(this.buttonSelectColor_Click);
+            this.buttonSelectColor.MouseHover += new System.EventHandler(this.buttonSelectColor_MouseHover);
             // 
             // pictureBox1
             // 
@@ -85,9 +91,10 @@
             // labelState
             // 
             this.labelState.AutoSize = true;
-            this.labelState.Location = new System.Drawing.Point(136, 236);
+            this.labelState.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.labelState.Location = new System.Drawing.Point(151, 236);
             this.labelState.Name = "labelState";
-            this.labelState.Size = new System.Drawing.Size(35, 13);
+            this.labelState.Size = new System.Drawing.Size(41, 16);
             this.labelState.TabIndex = 4;
             this.labelState.Text = "label1";
             // 
@@ -99,7 +106,8 @@
             // 
             // numericWallpaperTime
             // 
-            this.numericWallpaperTime.Location = new System.Drawing.Point(137, 155);
+            this.numericWallpaperTime.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.numericWallpaperTime.Location = new System.Drawing.Point(158, 157);
             this.numericWallpaperTime.Maximum = new decimal(new int[] {
             60,
             0,
@@ -112,7 +120,7 @@
             0});
             this.numericWallpaperTime.Name = "numericWallpaperTime";
             this.numericWallpaperTime.ReadOnly = true;
-            this.numericWallpaperTime.Size = new System.Drawing.Size(34, 20);
+            this.numericWallpaperTime.Size = new System.Drawing.Size(34, 21);
             this.numericWallpaperTime.TabIndex = 6;
             this.numericWallpaperTime.Value = new decimal(new int[] {
             1,
@@ -124,18 +132,20 @@
             // label1
             // 
             this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.label1.Location = new System.Drawing.Point(10, 157);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(121, 13);
+            this.label1.Size = new System.Drawing.Size(146, 16);
             this.label1.TabIndex = 7;
             this.label1.Text = "Change wallpaper every";
             // 
             // isShuffle
             // 
             this.isShuffle.AutoSize = true;
-            this.isShuffle.Location = new System.Drawing.Point(13, 191);
+            this.isShuffle.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.isShuffle.Location = new System.Drawing.Point(13, 176);
             this.isShuffle.Name = "isShuffle";
-            this.isShuffle.Size = new System.Drawing.Size(59, 17);
+            this.isShuffle.Size = new System.Drawing.Size(62, 20);
             this.isShuffle.TabIndex = 8;
             this.isShuffle.Text = "Shuffle";
             this.isShuffle.UseVisualStyleBackColor = true;
@@ -143,6 +153,7 @@
             // 
             // buttonSelectFolder
             // 
+            this.buttonSelectFolder.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.buttonSelectFolder.Location = new System.Drawing.Point(13, 113);
             this.buttonSelectFolder.Name = "buttonSelectFolder";
             this.buttonSelectFolder.Size = new System.Drawing.Size(113, 23);
@@ -150,13 +161,15 @@
             this.buttonSelectFolder.Text = "Select Folder";
             this.buttonSelectFolder.UseVisualStyleBackColor = true;
             this.buttonSelectFolder.Click += new System.EventHandler(this.buttonSelectFolder_Click);
+            this.buttonSelectFolder.MouseHover += new System.EventHandler(this.buttonSelectFolder_MouseHover);
             // 
             // checkBoxStartup
             // 
             this.checkBoxStartup.AutoSize = true;
-            this.checkBoxStartup.Location = new System.Drawing.Point(13, 215);
+            this.checkBoxStartup.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.checkBoxStartup.Location = new System.Drawing.Point(13, 202);
             this.checkBoxStartup.Name = "checkBoxStartup";
-            this.checkBoxStartup.Size = new System.Drawing.Size(115, 17);
+            this.checkBoxStartup.Size = new System.Drawing.Size(127, 20);
             this.checkBoxStartup.TabIndex = 10;
             this.checkBoxStartup.Text = "Set as AutoStartup";
             this.checkBoxStartup.UseVisualStyleBackColor = true;
@@ -178,12 +191,25 @@
             this.notifyIcon1.Visible = true;
             this.notifyIcon1.DoubleClick += new System.EventHandler(this.notifyIcon1_DoubleClick);
             // 
+            // checkBoxMinimized
+            // 
+            this.checkBoxMinimized.AutoSize = true;
+            this.checkBoxMinimized.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.checkBoxMinimized.Location = new System.Drawing.Point(13, 229);
+            this.checkBoxMinimized.Name = "checkBoxMinimized";
+            this.checkBoxMinimized.Size = new System.Drawing.Size(109, 20);
+            this.checkBoxMinimized.TabIndex = 11;
+            this.checkBoxMinimized.Text = "Start Minimized";
+            this.checkBoxMinimized.UseVisualStyleBackColor = true;
+            this.checkBoxMinimized.CheckedChanged += new System.EventHandler(this.checkBoxMinimized_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(713, 261);
+            this.Controls.Add(this.checkBoxMinimized);
             this.Controls.Add(this.checkBoxStartup);
             this.Controls.Add(this.buttonSelectFolder);
             this.Controls.Add(this.isShuffle);
@@ -199,6 +225,7 @@
             this.Name = "MainForm";
             this.Text = "Wallpaper Clock";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericWallpaperTime)).EndInit();
@@ -225,6 +252,8 @@
         private System.Windows.Forms.CheckBox checkBoxStartup;
         private System.IO.FileSystemWatcher fileSystemWatcher1;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.CheckBox checkBoxMinimized;
     }
 }
 

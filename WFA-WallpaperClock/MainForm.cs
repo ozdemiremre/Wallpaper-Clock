@@ -60,6 +60,7 @@ namespace WFA_WallpaperClock
 
             checkBoxStartup.Checked = Settings.IsStartupCreated();
             isShuffle.Checked = Convert.ToBoolean(Settings.ReadSetting(Settings.settings.shuffle));
+            checkBoxMinimized.Checked = Convert.ToBoolean(Settings.ReadSetting(Settings.settings.startMinimized));
 
 
         }
@@ -285,6 +286,41 @@ namespace WFA_WallpaperClock
         {
             Show();
             WindowState = FormWindowState.Normal;
+        }
+
+        private void buttonSelectFolder_MouseHover(object sender, EventArgs e)
+        {
+            Button b = sender as Button;
+
+            toolTip1.Show("Folder that will be scanned and pictures will be used inside of it.", b, 2000);
+        }
+
+        private void buttonSelectColor_MouseHover(object sender, EventArgs e)
+        {
+            Button b = sender as Button;
+
+            toolTip1.Show("Color that the clock will be shown in.", b, 2000);
+        }
+
+        private void buttonSelectFont_MouseHover(object sender, EventArgs e)
+        {
+            Button b = sender as Button;
+
+            toolTip1.Show("Font that the clock will be shown in.", b, 2000);
+        }
+
+        private void checkBoxMinimized_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.ChangeSetting(Settings.settings.startMinimized, checkBoxStartup.Checked.ToString());
+        }
+
+        private void MainForm_Shown(object sender, EventArgs e)
+        {
+            if (checkBoxMinimized.Checked == true)
+            {
+                this.WindowState = FormWindowState.Minimized;
+                Hide();
+            }
         }
     }
 
