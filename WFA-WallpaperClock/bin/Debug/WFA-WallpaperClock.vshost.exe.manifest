@@ -55,14 +55,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="WFA-WallpaperClock.exe" size="329736">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="WFA-WallpaperClock.exe" size="330248">
       <assemblyIdentity name="WFA-WallpaperClock" version="1.0.0.0" publicKeyToken="DCA21F82CF80109A" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>0iC/8R07WqRpHRLEjfNfbOYu+m1ypMehhDIePbzMZ6U=</dsig:DigestValue>
+        <dsig:DigestValue>nZ1ZUgpadP/BA4ixS7vCaGb2K5b306kVRPdmeBFd0go=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

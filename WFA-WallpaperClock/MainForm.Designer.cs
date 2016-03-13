@@ -47,6 +47,7 @@
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.checkBoxMinimized = new System.Windows.Forms.CheckBox();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericWallpaperTime)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).BeginInit();
@@ -81,7 +82,7 @@
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pictureBox1.Location = new System.Drawing.Point(198, 13);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(503, 236);
+            this.pictureBox1.Size = new System.Drawing.Size(451, 236);
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseDown);
@@ -92,7 +93,7 @@
             // 
             this.labelState.AutoSize = true;
             this.labelState.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.labelState.Location = new System.Drawing.Point(151, 236);
+            this.labelState.Location = new System.Drawing.Point(142, 236);
             this.labelState.Name = "labelState";
             this.labelState.Size = new System.Drawing.Size(41, 16);
             this.labelState.TabIndex = 4;
@@ -203,12 +204,23 @@
             this.checkBoxMinimized.UseVisualStyleBackColor = true;
             this.checkBoxMinimized.CheckedChanged += new System.EventHandler(this.checkBoxMinimized_CheckedChanged);
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Century Gothic", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.label2.Location = new System.Drawing.Point(155, 181);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(41, 13);
+            this.label2.TabIndex = 12;
+            this.label2.Text = "minutes";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(713, 261);
+            this.ClientSize = new System.Drawing.Size(656, 261);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.checkBoxMinimized);
             this.Controls.Add(this.checkBoxStartup);
             this.Controls.Add(this.buttonSelectFolder);
@@ -254,6 +266,7 @@
         private System.Windows.Forms.NotifyIcon notifyIcon1;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.CheckBox checkBoxMinimized;
+        private System.Windows.Forms.Label label2;
     }
 }
 

@@ -11,7 +11,6 @@ namespace WFA_WallpaperClock
     {
 
         static public FileInfo wallpaperFile;
-        //string WallpaperPth = Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Control Panel\Desktop", "Wallpaper", 0).ToString(); // Get the wallpaper path.
         static public string selectedFolderPath = null;
 
         static Random rnd = new Random(DateTime.Now.Millisecond);
