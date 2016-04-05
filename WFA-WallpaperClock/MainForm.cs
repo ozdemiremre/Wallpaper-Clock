@@ -216,6 +216,8 @@ namespace WFA_WallpaperClock
                 else
                 {
                     Settings.ChangeSetting(Settings.settings.wallpaperFolderDirectory, Wallpaper.selectedFolderPath);
+                    Wallpaper.fileInfoJPG = Directory.GetFiles(Wallpaper.selectedFolderPath, "*.jpg", SearchOption.AllDirectories);
+                    Wallpaper.fileInfoPNG = Directory.GetFiles(Wallpaper.selectedFolderPath, "*.png", SearchOption.AllDirectories);
                     string path = Wallpaper.GetNewWallpaper(isShuffle.Checked);
 
                     pictureBox1.Image = Image.FromFile(Wallpaper.wallpaperFile.FullName);

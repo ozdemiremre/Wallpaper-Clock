@@ -10,18 +10,18 @@ namespace WFA_WallpaperClock
     static class Wallpaper
     {
 
-        static public FileInfo wallpaperFile;
-        static public string selectedFolderPath = null;
+        public static FileInfo wallpaperFile;
+        public static string selectedFolderPath = null;
 
         static Random rnd = new Random(DateTime.Now.Millisecond);
-        static public Font font;
-        static public Color color;
-        static public float fontSize = 96f;
+        public static Font font;
+        public static Color color;
+        public static float fontSize = 96f;
         static string BurntWallpaperPath = null;
-        static public Point startpoint;
-        static public Rectangle pictureBoxRectangle;
-        static public string[] fileInfoPNG;
-        static public string[] fileInfoJPG;
+        public static Point startpoint;
+        public static Rectangle pictureBoxRectangle;
+        public static string[] fileInfoPNG;
+        public static string[] fileInfoJPG;
 
         [DllImport("user32.dll")]
         private static extern bool SystemParametersInfo(uint uiAction, uint uiParam, string pvParam, uint fWinIni);
@@ -47,9 +47,9 @@ namespace WFA_WallpaperClock
         /// <summary>
         /// Bakes the current time on the original wallpaper and returns the path of the baked wallpaper.
         /// </summary>
-        /// <param name="originalWallpaperPath">The full path of the orignial wallpaper.</param>
+        /// <param name="originalWallpaperPath">The full path of the original wallpaper.</param>
         /// <returns></returns>
-        static public string BurnNewWallpaper(string originalWallpaperPath)
+        public static string BurnNewWallpaper(string originalWallpaperPath)
         {
             Image wallpaper = Image.FromFile(originalWallpaperPath);
             Bitmap bufferBtmp = new Bitmap(wallpaper);
@@ -77,7 +77,7 @@ namespace WFA_WallpaperClock
         /// Calculates the relative Top-Left point of the rectangle, depending of the resolution of the wallpaper. W.I.P.
         /// </summary>
         /// <returns></returns>
-        static public Point CalculateTheRelativePoint() // This calculates as if the wallpaper fit is "Fill".
+        public static Point CalculateTheRelativePoint() // This calculates as if the wallpaper fit is "Fill".
         {
             Bitmap wallppr = new Bitmap(wallpaperFile.FullName);
             double wallpaperRatio = Convert.ToDouble(wallppr.Height) / Convert.ToDouble(wallppr.Width);
@@ -113,10 +113,10 @@ namespace WFA_WallpaperClock
         /// <summary>
         /// Finds a new JPG or PNG file from the selected file.
         /// </summary>
-        static public string GetNewWallpaper(bool isShuffle) //Atm number of pictures should be limited to UShort.Max(64,000-ish). Possible overflow.
+        public static string GetNewWallpaper(bool isShuffle) //Atm number of pictures should be limited to UShort.Max(64,000-ish). Possible overflow.
         {
 
-            if (System.IO.Directory.Exists(selectedFolderPath) && selectedFolderPath != null)     //Check f folder exists, folderPath string != null
+            if (Directory.Exists(selectedFolderPath) && selectedFolderPath != null)     //Check f folder exists, folderPath string != null
             {                                                                                                                                              //User is going to *select* a folder. So it already exists. Don't think I need to check again.
 
                 ushort wallpaperIndex = Convert.ToUInt16(Settings.ReadSetting(Settings.settings.lastWallpaperIndex));
@@ -156,7 +156,7 @@ namespace WFA_WallpaperClock
 
         }
 
-        static public void ScanSelectedFolder()
+        public static void ScanSelectedFolder()
         {
             fileInfoJPG = Directory.GetFiles(selectedFolderPath, "*.jpg", SearchOption.AllDirectories);
             fileInfoPNG = Directory.GetFiles(selectedFolderPath, "*.png", SearchOption.AllDirectories);
