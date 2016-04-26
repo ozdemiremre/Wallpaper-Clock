@@ -161,6 +161,8 @@ namespace WFA_WallpaperClock
             formGraphics.FillPath(new SolidBrush(Color.FromArgb(255, color)), path);
 
             labelState.Text = e.Location.X.ToString() + " , " + e.Location.Y.ToString();
+
+            SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, Wallpaper.BurnNewWallpaper(Wallpaper.wallpaperFile.FullName), SPIF_UPDATEINIFILE);
         }
 
         int timerCounter = 0;
@@ -169,16 +171,16 @@ namespace WFA_WallpaperClock
         {
             timerCounter++;
 
-            if (!String.IsNullOrEmpty(Settings.ReadSetting(Settings.settings.wallpaperFolderDirectory)) && !String.IsNullOrWhiteSpace(Settings.ReadSetting(Settings.settings.wallpaperFolderDirectory)))
+            if (!String.IsNullOrEmpty(Settings.ReadSetting(Settings.settings.wallpaperFolderDirectory)) && !String.IsNullOrWhiteSpace(Settings.ReadSetting(Settings.settings.wallpaperFolderDirectory))) //Is wallpaperFolderDirectory selected && that selected directory is NullORWhiteSpace
             {
                 SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, Wallpaper.BurnNewWallpaper(Wallpaper.wallpaperFile.FullName), SPIF_UPDATEINIFILE);
                 pictureBox1.LoadAsync(Wallpaper.wallpaperFile.FullName);
 
-                if (timerCounter == Convert.ToInt32(numericWallpaperTime.Value))
+                if (timerCounter == Convert.ToInt32(numericWallpaperTime.Value)) //If it's time to get a new wallpaper.
                 {
                     timerCounter = 0;
 
-                    string path = Wallpaper.GetNewWallpaper(isShuffle.Checked); //isShuffle not working atm
+                    string path = Wallpaper.GetNewWallpaper(isShuffle.Checked);
                     if (path != null)
                     {
                         pictureBox1.Image = Image.FromFile(Wallpaper.wallpaperFile.FullName);
@@ -190,7 +192,7 @@ namespace WFA_WallpaperClock
                     }
                 }
 
-                else if (timerCounter > Convert.ToInt32(numericWallpaperTime.Value)) //To stop timerCounter going over the max minutes.
+                else if (timerCounter > Convert.ToInt32(numericWallpaperTime.Value)) //Stop timerCounter going over the max minutes.
                     timerCounter = 0;
 
             }
