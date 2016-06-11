@@ -174,6 +174,13 @@ namespace WFA_WallpaperClock
         /// <returns></returns>
         public static Color GetComplementaryColor(Color _originalColor)
         {
+            if (_originalColor == Color.White)
+                return Color.Black;
+
+            if (_originalColor == Color.Black)
+                return Color.White;
+
+
             HSL newHSL = RGBToHSL(_originalColor);
             newHSL = calculateTheOppositeHue(newHSL);
             Color newColor = HSLToRGB(newHSL);
