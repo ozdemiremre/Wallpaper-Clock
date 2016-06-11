@@ -76,6 +76,8 @@ namespace WFA_WallpaperClock
                 Settings.ChangeSetting(Settings.settings.font, buttonSelectFont.Font.Name);
 
                 Wallpaper.font = this.font;
+
+                SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, Wallpaper.BurnNewWallpaper(Wallpaper.wallpaperFile.FullName), SPIF_UPDATEINIFILE);
             }
         }
 
@@ -90,6 +92,8 @@ namespace WFA_WallpaperClock
 
                 Wallpaper.color = this.color;
                 Settings.ChangeSetting(Settings.settings.color, color.ToArgb().ToString());
+
+                SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, Wallpaper.BurnNewWallpaper(Wallpaper.wallpaperFile.FullName), SPIF_UPDATEINIFILE);
             }
         }
 
