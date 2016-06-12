@@ -1,5 +1,7 @@
 # Wallpaper Clock
-A simple program with UI that updates your wallpaper, while baking the current time on it!
+
+**A simple program with a simple UI that updates your wallpaper, while baking the current time on it!**
+
 ![UI](http://i.imgur.com/DhUdQTG.png)
 
 ## Installation
@@ -9,7 +11,7 @@ A simple program with UI that updates your wallpaper, while baking the current t
  - Select the font, color and folder with some pictures in it.
  - Click and drag the left mouse button to position the clock.
 
-![](http://i.imgur.com/3UN2uK6.gif)
+ ![](http://i.imgur.com/3UN2uK6.gif)
  - Minimize the program.
  - **Done!**
 
