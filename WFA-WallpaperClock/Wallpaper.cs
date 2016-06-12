@@ -160,6 +160,16 @@ namespace WFA_WallpaperClock
         {
             fileInfoJPG = Directory.GetFiles(selectedFolderPath, "*.jpg", SearchOption.AllDirectories);
             fileInfoPNG = Directory.GetFiles(selectedFolderPath, "*.png", SearchOption.AllDirectories);
+
+            if (fileInfoJPG.Length == 0 && fileInfoPNG.Length == 0)
+            {
+                Wallpaper.selectedFolderPath = null;
+                MessageBox.Show("No pictures detected in selected folder.\n Did you delete them?", "ERROR", MessageBoxButtons.OK);
+            }
+            else if (fileInfoJPG.Length != 0 || fileInfoPNG.Length != 0)
+            {
+                GetNewWallpaper(Convert.ToBoolean(Settings.ReadSetting(Settings.settings.shuffle)));
+            }
         }
     }
 }

@@ -272,11 +272,7 @@ namespace WFA_WallpaperClock
 
         private void fileSystemWatcher1_Deleted(object sender, FileSystemEventArgs e)
         {
-            if (Directory.GetFiles(Wallpaper.selectedFolderPath, "*.jpg", SearchOption.AllDirectories).Length == 0 && Directory.GetFiles(Wallpaper.selectedFolderPath, "*.png", SearchOption.AllDirectories).Length == 0)
-            {
-                Wallpaper.selectedFolderPath = null;
-                MessageBox.Show("No pictures detected in selected folder.\n Did you delete them?", "ERROR", MessageBoxButtons.OK);
-            }
+            Wallpaper.ScanSelectedFolder();
         }
 
         private void fileSystemWatcher1_Created(object sender, FileSystemEventArgs e)
@@ -329,6 +325,11 @@ namespace WFA_WallpaperClock
                 this.WindowState = FormWindowState.Minimized;
                 Hide();
             }
+        }
+
+        private void fileSystemWatcher1_Changed(object sender, FileSystemEventArgs e)
+        {
+            Wallpaper.ScanSelectedFolder();
         }
     }
 
