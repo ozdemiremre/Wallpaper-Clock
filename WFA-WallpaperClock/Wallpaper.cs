@@ -38,7 +38,7 @@ namespace WFA_WallpaperClock
                 fileInfoPNG = Directory.GetFiles(selectedFolderPath, "*.png", SearchOption.AllDirectories);
             }
 
-            if (!String.IsNullOrEmpty(Settings.ReadSetting(Settings.settings.fontSize)) && !String.IsNullOrWhiteSpace(Settings.ReadSetting(Settings.settings.fontSize))) //If this program has run before and fontsize has been calculated.
+            if (!String.IsNullOrEmpty(Settings.ReadSetting(Settings.settings.fontSize)) && !String.IsNullOrWhiteSpace(Settings.ReadSetting(Settings.settings.fontSize))) //If this program has run before and font size has been calculated.
                 fontSize = float.Parse(Settings.ReadSetting(Settings.settings.fontSize));
 
 

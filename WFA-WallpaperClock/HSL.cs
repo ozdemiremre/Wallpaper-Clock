@@ -174,10 +174,10 @@ namespace WFA_WallpaperClock
         /// <returns></returns>
         public static Color GetComplementaryColor(Color _originalColor)
         {
-            if (_originalColor == Color.White)
+            if (_originalColor.ToArgb() == Color.White.ToArgb())
                 return Color.Black;
 
-            if (_originalColor == Color.Black)
+            if (_originalColor.ToArgb() == Color.Black.ToArgb())
                 return Color.White;
 
 
